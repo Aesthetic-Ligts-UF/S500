@@ -58,27 +58,102 @@ void setup() {
 }
 
 void prg_epelepsi_many_colors() {
+  char change[NUM_LIGHTS];
+
   for(int i = 0; i < NUM_LIGHTS; i++)  {
     delay(sped);
-    leds[i] = CHSV((color+random(80))%255, 255, (brightness+random(80))%255);
+    leds[i] = CHSV(color%255, 255, brightness%255);
+    if(random(2) == 0) change[i] = 1;
+    else change[i] = -1;
   }
-  FastLED.show();
+
+  char c = 0;
+  while(true) {
+    
+    for(int i = 0; i < NUM_LIGHTS; i++)  {
+      delay(sped);
+      CHSV led = rgb2hsv_approximate(leds[i]);
+      led.h += change[i];
+      led.v += change[i];
+      leds[i] = led;
+    }
+    FastLED.show();
+
+    if(c > 60) {
+      c = 0;
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        change[i] *= -1;
+      }
+    }
+
+    c += 1;
+  }
 }
 
 void prg_epelepsi_all_colors() {
+  char change[NUM_LIGHTS];
+
   for(int i = 0; i < NUM_LIGHTS; i++)  {
     delay(sped);
-    leds[i] = CHSV(random(256), 255, (brightness+random(80))%255);
+    leds[i] = CHSV(random(256), 255, brightness%255);
+    if(random(2) == 0) change[i] = 1;
+    else change[i] = -1;
   }
-  FastLED.show();
+
+  char c = 0;
+
+  while(true) {
+    for(int i = 0; i < NUM_LIGHTS; i++)  {
+      delay(sped);
+      CHSV led = rgb2hsv_approximate(leds[i]);
+      led.h += change[i];
+      led.v += change[i];
+      leds[i] = led;
+    }
+    FastLED.show();
+
+    if(c >= 60) {
+      c = 0;
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        change[i] *= -1;
+      }
+    }
+
+    c += 1;
+  }
 }
 
 void prg_epelepsi_single_color() {
+  char change[NUM_LIGHTS];
+
   for(int i = 0; i < NUM_LIGHTS; i++)  {
     delay(sped);
     leds[i] = CHSV(color, 255, (brightness+random(80))%255);
+    if(random(2) == 0) change[i] = 1;
+    else change[i] = -1;
   }
-  FastLED.show();
+
+  char c = 0;
+
+  while(true) {
+    for(int i = 0; i < NUM_LIGHTS; i++)  {
+      delay(sped);
+      CHSV led = rgb2hsv_approximate(leds[i]);
+      led.h += change[i];
+      led.v += change[i];
+      leds[i] = led;
+    }
+    FastLED.show();
+
+    if(c >= 255) {
+      c = 0;
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        change[i] *= -1;
+      }
+    }
+
+    c += 1;
+  }
 }
 
 void prg_single_color() {
