@@ -23,7 +23,7 @@
 
 #include "FastLED.h"
 
-const int NUM_LIGHTS = 150;
+const int NUM_LIGHTS = 100;
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define LED_PIN     5
