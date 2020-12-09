@@ -233,9 +233,10 @@ void prg_sin_single_color() {
   while (true) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = (sin(((float)i+j)/(float)NUM_LIGHTS*3.1415)+1.0)*80;
-      Serial.println(brightness+b);
-      leds[i] = CHSV(color, 255, (char)min(brightness+b, 255));
+      float b = (sin(((float)i+j)/(float)NUM_LIGHTS*3.1415)+1.0)*80;// value will go between 0 and 80*2
+      b = min(brightness+b, 255.0);
+      Serial.println((char)b);
+      leds[i] = CHSV(color, 255, (char)b);
     }
     delay(sped);
     FastLED.show();
@@ -244,7 +245,7 @@ void prg_sin_single_color() {
 
 void prg_sin_many_colors() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
-    char sin_val = (char)(sin((float)i/(float)NUM_LIGHTS*3.1415)*80);
+    char sin_val = (char)(sin((float)i/(float)NUM_LIGHTS*3.1415)*80); 
     leds[i] = CHSV(color+sin_val, 255, brightness+sin_val);
     delay(sped);
     FastLED.show();
