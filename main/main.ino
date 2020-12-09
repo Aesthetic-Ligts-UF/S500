@@ -233,7 +233,7 @@ void prg_sin_single_color() {
   while (true) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*100.0;
+      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       
@@ -250,11 +250,12 @@ void prg_sin_many_colors() {
   while (true) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*100.0;
+      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      char c = b;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       
-      leds[i] = CHSV(b, 255, b);
+      leds[i] = CHSV(c, 255, b);
     }
 
     delay(sped);
@@ -369,15 +370,15 @@ void prg_random() {
 void loop() {
   switch (program) {
     case 0: prg_single_color();             break;
-    case 1: prg_epelepsi_single_color();    break;
-    case 2: prg_fade_in_out_single_color(); break;
+    case 1: prg_many_colors();              break;
+    case 2: prg_comet_single_color();       break;
     case 3: prg_sin_single_color();         break;
     case 4: prg_sin_many_colors();          break;
     case 5: prg_epelepsi_many_colors();     break;
     case 6: prg_epelepsi_all_colors();      break;
-    case 7: prg_fade_in_out_many_colors();  break;
-    case 8: prg_many_colors();              break;
-    case 9: prg_comet_single_color();       break;
+    case 7: prg_epelepsi_single_color();    break;
+    case 8: prg_fade_in_out_many_colors();  break;
+    case 9: prg_fade_in_out_single_color(); break;
     case 10: prg_christmas();               break;
     case 11: prg_random();                  break;
     default:
