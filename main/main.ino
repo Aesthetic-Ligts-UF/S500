@@ -30,7 +30,7 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 10;
+int program = 3;
 int sped = 1000 / 100;
 int brightness = 75;
 int color = 25;
@@ -229,10 +229,14 @@ void prg_fade_in_out_many_colors() {
 }
 
 void prg_sin_single_color() {
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    float b = (sin((float)i/(float)NUM_LIGHTS*3.1415)+1.0)*80;
-    Serial.println(brightness+b);
-    leds[i] = CHSV(color, 255, (char)max(brightness+b, 255));
+  int j = 0;
+  while (true) {
+    j += 1;
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      float b = (sin(((float)i+j)/(float)NUM_LIGHTS*3.1415)+1.0)*80;
+      Serial.println(brightness+b);
+      leds[i] = CHSV(color, 255, (char)max(brightness+b, 255));
+    }
     delay(sped);
     FastLED.show();
   }
