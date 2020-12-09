@@ -52,7 +52,7 @@ void sleep(int ms) {
 
 void setup() {
   Serial.begin(9600);
-  delay( 3000 ); // power-up safety delay
+  sleep( 3000 ); // power-up safety sleep
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 100 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
@@ -62,7 +62,7 @@ void prg_epelepsi_many_colors() {
   char change[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++)  {
-    delay(sped);
+    sleep(sped);
     leds[i] = CHSV(color%255, 255, brightness%255);
     if(random(2) == 0) change[i] = 1;
     else change[i] = -1;
@@ -72,7 +72,7 @@ void prg_epelepsi_many_colors() {
   while(true) {
     
     for(int i = 0; i < NUM_LIGHTS; i++)  {
-      delay(sped);
+      sleep(sped);
       CHSV led = rgb2hsv_approximate(leds[i]);
       led.h += change[i];
       led.v += change[i];
@@ -103,7 +103,7 @@ void prg_epelepsi_all_colors() {
   char c = 0;
 
   while(true) {
-    delay(sped);
+    sleep(sped);
     for(int i = 0; i < NUM_LIGHTS; i++)  {
       CHSV led = rgb2hsv_approximate(leds[i]);
       led.h += change[i];
@@ -127,7 +127,7 @@ void prg_epelepsi_single_color() {
   char change[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++)  {
-    delay(sped);
+    sleep(sped);
     leds[i] = CHSV(color, 255, (brightness+random(80))%255);
     if(random(2) == 0) change[i] = 1;
     else change[i] = -1;
@@ -137,7 +137,7 @@ void prg_epelepsi_single_color() {
 
   while(true) {
     for(int i = 0; i < NUM_LIGHTS; i++)  {
-      delay(sped);
+      sleep(sped);
       CHSV led = rgb2hsv_approximate(leds[i]);
       led.h += change[i];
       led.v += change[i];
@@ -160,7 +160,7 @@ void prg_single_color() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
     leds[i] = CHSV(color, 255, brightness);
   }
-  delay(sped);
+  sleep(sped);
   FastLED.show();
 }
 
@@ -168,7 +168,7 @@ void prg_many_colors() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
     leds[i] = CHSV(color+i, 255, brightness);
   }
-  delay(sped);
+  sleep(sped);
   FastLED.show();
 }
 
@@ -184,7 +184,7 @@ void prg_fade_in_out_single_color() {
       led.v += 1;
       leds[i] = led;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 
@@ -195,7 +195,7 @@ void prg_fade_in_out_single_color() {
       led.v -= 1;
       leds[i] = led;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -212,7 +212,7 @@ void prg_fade_in_out_many_colors() {
       led.v += 1;
       leds[i] = led;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 
@@ -223,7 +223,7 @@ void prg_fade_in_out_many_colors() {
       led.v -= 1;
       leds[i] = led;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -240,7 +240,7 @@ void prg_sin_single_color() {
       leds[i] = CHSV(color, 255, b);
     }
 
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -251,14 +251,14 @@ void prg_sin_many_colors() {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
       float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      char c = b;
+      char c = color+b;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       
       leds[i] = CHSV(c, 255, b);
     }
 
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -270,7 +270,7 @@ void prg_comet_single_color() {
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color, 255, brightness * 0.75); }
     if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -282,7 +282,7 @@ void prg_comet_many_colors() {
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color+i, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color+i, 255, brightness * 0.75); }
     if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -320,7 +320,7 @@ void prg_christmas() {
         leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
         x += 3;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
@@ -361,7 +361,7 @@ void prg_random() {
         leds[i] = ColorFromPalette(palette, x, brightness, current_blending);
         x += 3;
     }
-    delay(sped);
+    sleep(sped);
     FastLED.show();
   }
 }
