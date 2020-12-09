@@ -236,7 +236,7 @@ void prg_sin_single_color() {
       float b = (sin((float)i+j)/(float)NUM_LIGHTS*3.1415)*200;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
-      Serial.println(b);
+      Serial.println((float)b);
       leds[i] = CHSV(color, 255, b);
     }
     delay(sped);
