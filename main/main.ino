@@ -246,9 +246,17 @@ void prg_sin_single_color() {
 }
 
 void prg_sin_many_colors() {
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    char sin_val = (char)(sin((float)i/(float)NUM_LIGHTS*3.1415)*80); 
-    leds[i] = CHSV(color+sin_val, 255, brightness+sin_val);
+  int j = 0;
+  while (true) {
+    j += 1;
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*100.0;
+      b = min(brightness+b, 255.0);
+      b = max(b, 0.0);
+      
+      leds[i] = CHSV(b, 255, b);
+    }
+
     delay(sped);
     FastLED.show();
   }
