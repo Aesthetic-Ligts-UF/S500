@@ -31,7 +31,7 @@ const int NUM_LIGHTS = 99;
 CRGB leds[NUM_LIGHTS];
 
 int program = 3;
-int sped = 1000 / 40;
+int sped = 1000 / 100;
 int brightness = 75;
 int color = 25;
 
@@ -239,8 +239,7 @@ void prg_sin_single_color() {
       
       leds[i] = CHSV(color, 255, b);
     }
-    CHSV led = rgb2hsv_approximate(leds[0]);
-    Serial.println(led.v);
+
     delay(sped);
     FastLED.show();
   }
