@@ -38,7 +38,7 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 4;
+int program = 2;
 int sped = 1000 / 100;
 int brightness = 75;
 int color = 100;
@@ -286,9 +286,9 @@ void prg_comet_single_color() {
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color, 255, brightness * 0.75); }
     if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
-    sleep(sped);
-    FastLED.show();
   }
+  sleep(sped);
+  FastLED.show();
 }
 
 void prg_comet_many_colors() {
@@ -298,9 +298,9 @@ void prg_comet_many_colors() {
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color+i, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color+i, 255, brightness * 0.75); }
     if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
-    sleep(sped);
-    FastLED.show();
   }
+  sleep(sped);
+  FastLED.show();
 }
 extern const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM;
 
@@ -397,6 +397,7 @@ void loop() {
     case 9: prg_fade_in_out_single_color(); break;
     case 10: prg_christmas();               break;
     case 11: prg_random();                  break;
+    case 12: prg_comet_many_colors();       break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
