@@ -236,9 +236,11 @@ void prg_sin_single_color() {
       float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*100.0;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
-      Serial.println((float)b);
+      
       leds[i] = CHSV(color, 255, b);
     }
+    CHSV led = rgb2hsv_approximate(leds[0]);
+    Serial.println(led.v);
     delay(sped);
     FastLED.show();
   }
