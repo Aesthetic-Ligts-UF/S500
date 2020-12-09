@@ -31,7 +31,7 @@ const int NUM_LIGHTS = 99;
 CRGB leds[NUM_LIGHTS];
 
 int program = 3;
-int sped = 1000 / 100;
+int sped = 1000 / 500;
 int brightness = 75;
 int color = 25;
 
@@ -233,8 +233,9 @@ void prg_sin_single_color() {
   while (true) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = (sin(((float)i+j)/(float)NUM_LIGHTS*3.1415)+1.0)*80;// value will go between 0 and 80*2
+      float b = (sin((float)i+j)/(float)NUM_LIGHTS*3.1415)*80;
       b = min(brightness+b, 255.0);
+      b = max(brightness+b, 0.0);
       Serial.println(b);
       leds[i] = CHSV(color, 255, b);
     }
