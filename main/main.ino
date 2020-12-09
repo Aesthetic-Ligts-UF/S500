@@ -372,11 +372,11 @@ void loop() {
     case 1: prg_epelepsi_single_color();    break;
     case 2: prg_fade_in_out_single_color(); break;
     case 3: prg_sin_single_color();         break;
-    case 4: prg_many_colors();              break;
+    case 4: prg_sin_many_colors();          break;
     case 5: prg_epelepsi_many_colors();     break;
     case 6: prg_epelepsi_all_colors();      break;
     case 7: prg_fade_in_out_many_colors();  break;
-    case 8: prg_sin_many_colors();          break;
+    case 8: prg_many_colors();              break;
     case 9: prg_comet_single_color();       break;
     case 10: prg_christmas();               break;
     case 11: prg_random();                  break;
