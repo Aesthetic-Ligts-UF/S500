@@ -23,17 +23,17 @@
 
 #include "FastLED.h"
 
-const int NUM_LIGHTS = 100;
+const int NUM_LIGHTS = 99;
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define LED_PIN     5
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 0;
-int sped = 10;
-int brightness = 100;
-int color = 0;
+int program = 10;
+int sped = 1000 / 100;
+int brightness = 75;
+int color = 25;
 
 const long din_mamma_1 = 0x7100AB;
 const long din_mamma_2 = 0xFF35AB;
@@ -51,6 +51,7 @@ void sleep(int ms) {
 }
 
 void setup() {
+  Serial.begin(9600);
   delay( 3000 ); // power-up safety delay
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 100 );
@@ -94,17 +95,16 @@ void prg_epelepsi_all_colors() {
   char change[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++)  {
-    delay(sped);
     leds[i] = CHSV(random(256), 255, brightness%255);
-    if(random(2) == 0) change[i] = 1;
-    else change[i] = -1;
+    if(random(2) == 0) change[i] = 2;
+    else change[i] = -2;
   }
 
   char c = 0;
 
   while(true) {
+    delay(sped);
     for(int i = 0; i < NUM_LIGHTS; i++)  {
-      delay(sped);
       CHSV led = rgb2hsv_approximate(leds[i]);
       led.h += change[i];
       led.v += change[i];
@@ -230,7 +230,9 @@ void prg_fade_in_out_many_colors() {
 
 void prg_sin_single_color() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
-    leds[i] = CHSV(color, 255, brightness+(char)(sin((float)i/(float)NUM_LIGHTS*3.1415)*80));
+    float b = (sin((float)i/(float)NUM_LIGHTS*3.1415)+1.0)*80;
+    Serial.println(brightness+b);
+    leds[i] = CHSV(color, 255, (char)max(brightness+b, 255));
     delay(sped);
     FastLED.show();
   }
@@ -268,6 +270,86 @@ void prg_comet_many_colors() {
     FastLED.show();
   }
 }
+extern const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM;
+
+const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM = 
+{
+    0xBD0000, //RED
+    0x14AC00, //GREEN
+    0xFFD700, //GOLD
+
+    0xBD0000,
+    0x14AC00,
+    0xFFD700,
+
+    0xBD0000,
+    0x14AC00,
+    0xFFD700,
+
+    0xBD0000,
+    0x14AC00,
+    0xFFD700,
+
+    0xBD0000,
+};
+
+void prg_christmas() {
+  TBlendType current_blending = LINEARBLEND;
+  static int color_index = 0;
+
+  while(true) {
+    int x = color_index;
+    color_index += 1;
+    for( int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
+        x += 3;
+    }
+    delay(sped);
+    FastLED.show();
+  }
+}
+
+
+void prg_random() {
+  randomSeed(analogRead(0));
+  CRGBPalette16 palette(
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256)),
+    CRGB(random(256), random(256), random(256))
+  );
+
+  for(int i = 0; i < 16; i++) {
+    //palette[i] = random(2^31);
+  }
+  
+  TBlendType current_blending = LINEARBLEND;
+  static int color_index = 0;
+
+  while(true) {
+    int x = color_index;
+    color_index += 1;
+    for( int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = ColorFromPalette(palette, x, brightness, current_blending);
+        x += 3;
+    }
+    delay(sped);
+    FastLED.show();
+  }
+}
+
 
 void loop() {
   switch (program) {
@@ -281,6 +363,8 @@ void loop() {
     case 7: prg_fade_in_out_many_colors();  break;
     case 8: prg_sin_many_colors();          break;
     case 9: prg_comet_single_color();       break;
+    case 10: prg_christmas();               break;
+    case 11: prg_random();                  break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
