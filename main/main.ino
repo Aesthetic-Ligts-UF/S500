@@ -22,6 +22,14 @@
  */
 
 #include "FastLED.h"
+#include <IRremote.h>
+
+// Define sensor pin
+const int RECV_PIN = 4;
+ 
+// Define IR Receiver and Results Objects
+IRrecv irrecv(RECV_PIN);
+decode_results results;
 
 const int NUM_LIGHTS = 99;
 #define LED_TYPE    WS2811
@@ -40,6 +48,11 @@ const long din_mamma_2 = 0xFF35AB;
 
 void poll_inputs() {
   //TODO fill in code to poll innput from the IR sensor
+  if (irrecv.decode(&results)){
+    // Print Code in HEX
+        Serial.println(results.value, HEX);
+        irrecv.resume();
+  }
 }
 
 //TODO return a bool if the current program should be changed
@@ -52,7 +65,10 @@ void sleep(int ms) {
 
 void setup() {
   Serial.begin(9600);
-  sleep( 3000 ); // power-up safety sleep
+  irrecv.enableIRIn();
+
+  sleep( 1500 ); // power-up safety sleep
+
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 100 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
