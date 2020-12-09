@@ -25,7 +25,7 @@
 #include <IRremote.h>
 
 // Define sensor pin
-const int RECV_PIN = 2;
+const int RECV_PIN = 11;
  
 // Define IR Receiver and Results Objects
 IRrecv irrecv(RECV_PIN);
@@ -38,7 +38,7 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 4;
+int program = 2;
 int sped = 1000 / 100;
 int brightness = 75;
 int color = 100;
