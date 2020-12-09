@@ -286,9 +286,9 @@ void prg_comet_single_color() {
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color, 255, brightness * 0.75); }
     if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
+    sleep(sped);
+    FastLED.show();
   }
-  sleep(sped);
-  FastLED.show();
 }
 
 void prg_comet_many_colors() {
