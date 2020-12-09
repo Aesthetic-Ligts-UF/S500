@@ -233,7 +233,7 @@ void prg_sin_single_color() {
   while (true) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415)*100.0;
+      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*100.0;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       Serial.println((float)b);
