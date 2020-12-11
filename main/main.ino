@@ -192,7 +192,7 @@ void prg_fade_in_out_single_color() {
   int j = 0;
   while (true) {
     j += 1;
-    
+
     float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
     b = min(brightness+b, 255.0);
     b = max(b, 0.0);
@@ -204,53 +204,21 @@ void prg_fade_in_out_single_color() {
     sleep(sped);
     FastLED.show();
   }
-  
-  /*//FADE IN
-  for(int j = 0; j < brightness; j++) {
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.v += 1;
-      leds[i] = led;
-    }
-    sleep(sped);
-    FastLED.show();
-  }
-
-  //FADE OUT
-  for(int j = 0; j < brightness; j++) {
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.v -= 1;
-      leds[i] = led;
-    }
-    sleep(sped);
-    FastLED.show();
-  }*/
 }
 
 void prg_fade_in_out_many_colors() {
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    leds[i] = CHSV((color+i)%256, 255, 0);
-  }
-  
-  //FADE IN
-  for(int j = 0; j < brightness; j++) {
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.v += 1;
-      leds[i] = led;
-    }
-    sleep(sped);
-    FastLED.show();
-  }
+  int j = 0;
+  while (true) {
+    j += 1;
+    
+    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+    b = min(brightness+b, 255.0);
+    b = max(b, 0.0);
 
-  //FADE OUT
-  for(int j = 0; j < brightness; j++) {
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.v -= 1;
-      leds[i] = led;
+      leds[i] = CHSV((color+i)%256, 255, b);
     }
+
     sleep(sped);
     FastLED.show();
   }
