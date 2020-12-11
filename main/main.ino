@@ -280,12 +280,17 @@ void prg_sin_many_colors() {
 }
 
 void prg_comet_single_color() {
-  for(int i = 0; i < NUM_LIGHTS+4; i++) {
-    if(i > 3 && i < NUM_LIGHTS+4) { leds[i-4] = CRGB(0, 0, 0); }
-    if(i > 2 && i < NUM_LIGHTS+3) { leds[i-3] = CHSV(color, 255, brightness * 0.25); }
+  int trail_length = 4;
+  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
+    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
+    for(int j = 0; j < trail_length; j++) {
+
+      leds[i-j] = CHSV(color, 255, brightness * ((float)j/trail_length));
+    }
+    /*if(i > 2 && i < NUM_LIGHTS+3) { leds[i-3] = CHSV(color, 255, brightness * 0.25); }
     if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color, 255, brightness * 0.50); }
     if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color, 255, brightness * 0.75); }
-    if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
+    if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }*/
     sleep(sped);
     FastLED.show();
   }
