@@ -38,7 +38,7 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 5;
+int program = 6;
 int sped = 1000 / 100;
 int brightness = 200;
 int color = 25;
@@ -407,16 +407,16 @@ void loop() {
     case 0: prg_single_color();             break;
     case 1: prg_many_colors();              break;
     case 2: prg_comet_single_color();       break;
-    case 3: prg_sin_single_color();         break;
-    case 4: prg_sin_many_colors();          break;
-    case 5: prg_epelepsi_many_colors();     break;
-    case 6: prg_epelepsi_all_colors();      break;
-    case 7: prg_epelepsi_single_color();    break;
-    case 8: prg_fade_in_out_many_colors();  break;
+    case 3: prg_comet_many_colors();        break;
+    case 4: prg_sin_single_color();         break;
+    case 5: prg_sin_many_colors();          break;
+    case 6: prg_epelepsi_single_color();    break;
+    case 7: prg_epelepsi_many_colors();     break;
+    case 8: prg_epelepsi_all_colors();      break;
     case 9: prg_fade_in_out_single_color(); break;
-    case 10: prg_christmas();               break;
+    case 10: prg_fade_in_out_many_colors(); break;
     case 11: prg_random();                  break;
-    case 12: prg_comet_many_colors();       break;
+    case 12: prg_christmas();               break;
     case 13: prg_rainbow();                 break;
     default:
       Serial.print("PROGRAM ID");
