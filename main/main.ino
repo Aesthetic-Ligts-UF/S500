@@ -88,12 +88,12 @@ void prg_epelepsi_many_colors() {
   while(true) {
     
     for(int i = 0; i < NUM_LIGHTS; i++)  {
-      sleep(sped);
       CHSV led = rgb2hsv_approximate(leds[i]);
       led.h += change[i];
       led.v += change[i];
       leds[i] = led;
     }
+    sleep(sped);
     FastLED.show();
 
     if(c > 60) {
