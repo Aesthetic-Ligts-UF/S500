@@ -294,16 +294,19 @@ void prg_comet_single_color() {
 }
 
 void prg_comet_many_colors() {
-  for(int i = 0; i < NUM_LIGHTS+4; i++) {
-    if(i > 3 && i < NUM_LIGHTS+4) { leds[i-4] = CRGB(0, 0, 0); }
-    if(i > 2 && i < NUM_LIGHTS+3) { leds[i-3] = CHSV(color+i, 255, brightness * 0.25); }
-    if(i > 1 && i < NUM_LIGHTS+2) { leds[i-2] = CHSV(color+i, 255, brightness * 0.50); }
-    if(i > 0 && i < NUM_LIGHTS+1) { leds[i-1] = CHSV(color+i, 255, brightness * 0.75); }
-    if(i < NUM_LIGHTS) { leds[i] = CHSV(color, 255, brightness); }
+  int trail_length = 12;
+  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
+    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
+    for(int j = 0; j < trail_length; j++) {
+      if(i-j > 0 && i-j < NUM_LIGHTS) {
+        leds[i-j] = CHSV(color+i, 255, brightness * (1.0 - (float)j/trail_length));
+      }
+    }
+    sleep(sped);
+    FastLED.show();
   }
-  sleep(sped);
-  FastLED.show();
 }
+
 extern const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM;
 
 const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM = 
