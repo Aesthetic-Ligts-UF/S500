@@ -192,12 +192,17 @@ void prg_fade_in_out_single_color() {
   int j = 0;
   while (true) {
     j += 1;
+    
     float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
     b = min(brightness+b, 255.0);
     b = max(b, 0.0);
+
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, 255, b);
     }
+
+    sleep(sped);
+    FastLED.show();
   }
   
   /*//FADE IN
