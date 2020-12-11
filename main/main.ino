@@ -38,7 +38,7 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 2;
+int program = 13;
 int sped = 1000 / 100;
 int brightness = 75;
 int color = 100;
@@ -332,10 +332,20 @@ void prg_christmas() {
   while(true) {
     int x = color_index;
     color_index += 1;
-    for( int i = 0; i < NUM_LIGHTS; i++) {
-        leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
-        x += 3;
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
+      x += 3;
     }
+    sleep(sped);
+    FastLED.show();
+  }
+}
+
+void prg_rainbow() {
+  int j = 0;
+  while(true) {
+    j += 1;
+    fill_rainbow(leds, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
     sleep(sped);
     FastLED.show();
   }
@@ -398,6 +408,7 @@ void loop() {
     case 10: prg_christmas();               break;
     case 11: prg_random();                  break;
     case 12: prg_comet_many_colors();       break;
+    case 13: prg_rainbow();                 break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
