@@ -280,7 +280,7 @@ void prg_sin_many_colors() {
 }
 
 void prg_comet_single_color() {
-  int trail_length = 8;
+  int trail_length = 12;
   for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
     if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
     for(int j = 0; j < trail_length; j++) {
