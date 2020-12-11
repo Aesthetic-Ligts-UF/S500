@@ -39,7 +39,7 @@ const int NUM_LIGHTS = 99;
 CRGB leds[NUM_LIGHTS];
 
 int program = 9;
-int sped = 1000 / 100;
+int sped = 30;
 int brightness = 200;
 int color = 25;
 
