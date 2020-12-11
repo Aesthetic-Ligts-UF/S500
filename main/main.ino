@@ -38,10 +38,10 @@ const int NUM_LIGHTS = 99;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 10;
+int program = 11;
 int sped = 30;
 int brightness = 200;
-int color = 25;
+int color = 100;
 
 const long din_mamma_1 = 0x7100AB;
 const long din_mamma_2 = 0xFF35AB;
