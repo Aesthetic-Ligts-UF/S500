@@ -345,7 +345,15 @@ void prg_rainbow() {
   int j = 0;
   while(true) {
     j += 1;
-    fill_rainbow(leds, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
+
+    CHSV rainbow[NUM_LIGHTS];
+    fill_rainbow(rainbow, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
+    
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      rainbow[i].v = brightness;
+      leds[i] = rainbow[i];
+    }
+
     sleep(sped);
     FastLED.show();
   }
