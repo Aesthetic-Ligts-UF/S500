@@ -182,7 +182,7 @@ void prg_single_color() {
 
 void prg_many_colors() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
-    leds[i] = CHSV(color+i, 255, brightness);
+    leds[i] = CHSV(color+((float)i/NUM_LIGHTS)*160, 255, brightness);
   }
   sleep(sped);
   FastLED.show();
@@ -380,10 +380,6 @@ void prg_random() {
     CRGB(random(256), random(256), random(256)),
     CRGB(random(256), random(256), random(256))
   );
-
-  for(int i = 0; i < 16; i++) {
-    //palette[i] = random(2^31);
-  }
   
   TBlendType current_blending = LINEARBLEND;
   static int color_index = 0;
