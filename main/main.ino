@@ -20,7 +20,6 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *   SOFTWARE.
  */
-
 #include "FastLED.h"
 #include <IRremote.h>
 
@@ -31,15 +30,15 @@ const int RECV_PIN = 4;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 
-const int NUM_LIGHTS = 99;
+const int NUM_LIGHTS = 150;
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define LED_PIN     5
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 12;
-int sped = 30;
+int program = 13;
+int sped = 10;
 int brightness = 200;
 int color = 100;
 
