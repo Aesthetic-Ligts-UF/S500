@@ -420,7 +420,7 @@ void prg_random() {
 void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
   FastLED.show();
-  while(sleep(10));   
+  while(sleep(1000));   
 }
 
 void loop() {
