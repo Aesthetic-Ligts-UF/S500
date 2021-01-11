@@ -37,7 +37,7 @@ constexpr int NUM_LIGHTS = 100;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = -1;
+int program = 0;
 int sped = 10;
 int brightness = 200;
 int color = 200;
