@@ -47,6 +47,7 @@ constexpr long din_mamma_2 = 0xFF35AB;
 
 void poll_inputs() {
   //TODO fill in code to poll innput from the IR sensor
+  Serial.println("t");
   if (irrecv.decode(&results)) {
     // Print Code in HEX
         Serial.println(results.value, HEX);
