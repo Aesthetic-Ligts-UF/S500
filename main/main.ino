@@ -59,7 +59,7 @@ void poll_inputs() {
 bool sleep(int ms) {
   int current_program = program;
   unsigned long start_time = millis();
-
+  Serial.println("tss");
   while(millis() < start_time + ms) {
     poll_inputs();
   }
@@ -76,7 +76,7 @@ void setup() {
   irrecv.enableIRIn();
 
   sleep( 1500 ); // power-up safety sleep
-
+  Serial.println("ts");
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 80 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
