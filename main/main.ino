@@ -30,6 +30,7 @@ constexpr int RECV_PIN = 4;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 
+constexpr int NUM_PROGS = 16;
 constexpr int NUM_LIGHTS = 100;
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
@@ -45,12 +46,44 @@ int color = 100;
 constexpr long din_mamma_1 = 0x7100AB;
 constexpr long din_mamma_2 = 0xFF35AB;
 
+enum class IRCode : long int {
+  ONE     = 0xFFA25D,
+  TWO     = 0xFF629D,
+  THREE   = 0xFFE21D,
+  FOUR    = 0xFF22DD,
+  FIVE    = 0xFF02FD,
+  SIX     = 0xFFC23D,
+  SEVEN   = 0xFFE01F,
+  EIGHT   = 0xFFA857,
+  NINE    = 0xFF906F,
+  ZERO    = 0xFF9867,
+  ASTERIX = 0xFF6897,
+  HASHTAG = 0xFFB04F,
+  UPP     = 0xFF18E7,
+  DOWN    = 0xFF4AB5,
+  RIGHT   = 0xFF5AA5,
+  LEFT    = 0xFF10EF,
+};
+
 void poll_inputs() {
   //TODO fill in code to poll innput from the IR sensor
   if (irrecv.decode(&results)) {
     // Print Code in HEX
-        Serial.println(results.value, HEX);
-        irrecv.resume();
+    Serial.println(results.value, HEX);
+    irrecv.resume();
+
+    IRCode ircode = (IRCode)results.value;
+
+    switch(ircode) {
+      case IRCode::UPP:
+        program = (program + 1) % 16;
+        break;
+      case IRCode::DOWN:
+        program = (NUM_PROGS + (program - 1)) % 16;
+        break;
+      default:
+        break;
+    }
   }
 }
 
