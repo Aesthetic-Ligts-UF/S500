@@ -38,7 +38,7 @@ constexpr int NUM_LIGHTS = 100;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 0;
+int program = 7;
 int sped = 10;
 int brightness = 200;
 int color = 100;
@@ -88,7 +88,7 @@ void poll_inputs() {
 }
 
 //TODO return a bool if the current program should be changed
-bool sleep(int ms) {
+bool sleep(long int ms) {
   int current_program = program;
   unsigned long start_time = millis();
   while(millis() < start_time + ms) {
@@ -106,7 +106,7 @@ void setup() {
   Serial.begin(9600);
   irrecv.enableIRIn();
 
-  sleep( 1500 ); // power-up safety sleep
+  sleep( 60000000 ); // power-up safety sleep
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 80 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
