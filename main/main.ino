@@ -109,7 +109,7 @@ void setup() {
   Serial.begin(9600);
   irrecv.enableIRIn();
 
-  sleep( 60000000 ); // power-up safety sleep
+  sleep( 1500 ); // power-up safety sleep
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 80 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
