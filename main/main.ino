@@ -21,8 +21,6 @@
  *   SOFTWARE.
  */
 
-#define FASTLED_ALLOW_INTERRUPTS 1
-#define FASTLED_INTERRUPT_RETRY_COUNT 1
 #include <FastLED.h>
 #include <IRremote.h>
 
@@ -41,10 +39,10 @@ constexpr int NUM_LIGHTS = 100;
 
 CRGB leds[NUM_LIGHTS];
 
-int program = 7;
-int sped = 10;
-int brightness = 200;
-int color = 100;
+int program;
+int sped;
+int brightness;
+int color;
 
 constexpr long din_mamma_1 = 0x7100AB;
 constexpr long din_mamma_2 = 0xFF35AB;
@@ -66,11 +64,30 @@ enum class IRCode : long int {
   DOWN    = 0xFF4AB5,
   RIGHT   = 0xFF5AA5,
   LEFT    = 0xFF10EF,
+  OK      = 0xFF38C7
 };
 
+void reset() {
+  program = 0;
+  sped = 10;
+  brightness = 200;
+  color = 100;
+}
+
 void poll_inputs() {
-  //TODO fill in code to poll innput from the IR sensor
-  if (irrecv.decode(&results)) {
+
+  static char num_str[4] = "000";
+  static char num_index = 0;
+
+  if(num_index == 2) {
+    Serial.println(num_str);
+    num_str[0] = '0';
+    num_str[1] = '0';
+    num_str[2] = '0';
+    num_index = 0;
+  }
+
+  if(irrecv.decode(&results)) {
     // Print Code in HEX
     Serial.println(results.value, HEX);
     irrecv.resume();
@@ -78,11 +95,54 @@ void poll_inputs() {
     IRCode ircode = (IRCode)results.value;
 
     switch(ircode) {
+      case IRCode::OK:
+        if(program == -1) program = 0;
+        else              program = -1;
+        break;
+      case IRCode::LEFT:
+        color += 20;
+        break;
+      case IRCode::RIGHT:
+        sped = (sped % 40) + 5;
+        break;
       case IRCode::UPP:
-        program = (program + 1) % 16;
+        program = (program + 1) % NUM_PROGS;
         break;
       case IRCode::DOWN:
         program = (NUM_PROGS + (program - 1)) % 16;
+        break;
+      case IRCode::HASHTAG:
+        reset();
+        break;
+      case IRCode::ZERO:
+        num_str[num_index++] = '0';
+        break;
+      case IRCode::ONE:
+        num_str[num_index++] = '1';
+        break;
+      case IRCode::TWO:
+        num_str[num_index++] = '2';
+        break;
+      case IRCode::THREE:
+        num_str[num_index++] = '3';
+        break;
+      case IRCode::FOUR:
+        num_str[num_index++] = '4';
+        break;
+      case IRCode::FIVE:
+        num_str[num_index++] = '5';
+        break;
+      case IRCode::SIX:
+        num_str[num_index++] = '6';
+        break;
+      case IRCode::SEVEN:
+        num_str[num_index++] = '7';
+        break;
+      case IRCode::EIGHT:
+        num_str[num_index++] = '8';
+        break;
+      case IRCode::NINE:
+        num_str[num_index++] = '9';
         break;
       default:
         break;
@@ -93,16 +153,24 @@ void poll_inputs() {
 //TODO return a bool if the current program should be changed
 bool sleep(long int ms) {
   int current_program = program;
+
+
   unsigned long start_time = millis();
   while(millis() < start_time + ms) {
     poll_inputs();
   }
 
-  //program = ((millis() / 1000) / 4) % 14;
+  /*program = ((millis() / 1000) / 4) % 14;
   if(current_program != program) 
-    color = random(256);
+    color = random(256);*/
 
   return current_program == program;
+}
+
+void show() {
+  if(irrecv.isIdle()) {
+    FastLED.show();
+  }
 }
 
 void setup() {
@@ -113,6 +181,8 @@ void setup() {
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 80 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
+
+  reset();
 }
 
 void prg_epelepsi_many_colors() {
@@ -135,7 +205,7 @@ void prg_epelepsi_many_colors() {
       leds[i] = led;
     }
     
-    FastLED.show();
+    show();
 
     if(c > 60) {
       c = 0;
@@ -166,7 +236,7 @@ void prg_epelepsi_all_colors() {
       led.v += change[i];
       leds[i] = led;
     }
-    FastLED.show();
+    show();
 
     if(c >= 60) {
       c = 0;
@@ -198,7 +268,7 @@ void prg_epelepsi_single_color() {
       led.v += change[i];
       leds[i] = led;
     }
-    FastLED.show();
+    show();
 
     if(c >= 255) {
       c = 0;
@@ -216,7 +286,7 @@ void prg_single_color() {
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, 255, brightness);
     }
-    FastLED.show();
+    show();
   }
 }
 
@@ -225,7 +295,7 @@ void prg_many_colors() {
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color+((float)i/NUM_LIGHTS)*160, 255, brightness);
     }
-    FastLED.show();
+    show();
   }
 }
 
@@ -242,7 +312,7 @@ void prg_fade_in_out_single_color() {
       leds[i] = CHSV(color, 255, b);
     }
 
-    FastLED.show();
+    show();
   }
 }
 
@@ -259,7 +329,7 @@ void prg_fade_in_out_many_colors() {
       leds[i] = CHSV((color+i)%256, 255, b);
     }
 
-    FastLED.show();
+    show();
   }
 }
 
@@ -275,7 +345,7 @@ void prg_sin_single_color() {
       leds[i] = CHSV(color, 255, b);
     }
 
-    FastLED.show();
+    show();
   }
 }
 
@@ -292,7 +362,7 @@ void prg_sin_many_colors() {
       leds[i] = CHSV(c, 255, b);
     }
 
-    FastLED.show();
+    show();
   }
 }
 
@@ -306,7 +376,7 @@ void prg_comet_single_color() {
       }
     }
     sleep(sped);
-    FastLED.show();
+    show();
   }
 }
 
@@ -320,7 +390,7 @@ void prg_comet_many_colors() {
       }
     }
     sleep(sped);
-    FastLED.show();
+    show();
   }
 }
 
@@ -336,7 +406,7 @@ void prg_ping_pong_single_color() {
       }
     }
     sleep(sped);
-    FastLED.show();
+    show();
   }
 
   dir = !dir;
@@ -354,7 +424,7 @@ void prg_ping_pong_many_colors() {
       }
     }
     sleep(sped);
-    FastLED.show();
+    show();
   }
 
   dir = !dir;
@@ -394,7 +464,7 @@ void prg_christmas() {
       leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
       x += 3;
     }
-    FastLED.show();
+    show();
   }
 }
 
@@ -411,7 +481,7 @@ void prg_rainbow() {
       leds[i] = rainbow[i];
     }
 
-    FastLED.show();
+    show();
   }
 }
 
@@ -447,13 +517,13 @@ void prg_random() {
         leds[i] = ColorFromPalette(palette, x, brightness, current_blending);
         x += 3;
     }
-    FastLED.show();
+    show();
   }
 }
 
 void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
-  FastLED.show();
+  show();
   while(sleep(1000));   
 }
 
