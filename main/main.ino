@@ -32,7 +32,7 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 
 constexpr int NUM_PROGS = 16;
-constexpr int NUM_LIGHTS = 100;
+constexpr int NUM_LIGHTS = 150;
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define LED_PIN     5
@@ -70,7 +70,7 @@ enum class IRCode : long int {
 void reset() {
   program = 0;
   sped = 10;
-  brightness = 200;
+  brightness = 128;
   color = 100;
 }
 
@@ -79,7 +79,7 @@ void poll_inputs() {
   static char num_str[4] = "000";
   static char num_index = 0;
 
-  if(num_index == 2) {
+  if(num_index == 3) {
     Serial.println(num_str);
     num_str[0] = '0';
     num_str[1] = '0';
@@ -109,7 +109,7 @@ void poll_inputs() {
         program = (program + 1) % NUM_PROGS;
         break;
       case IRCode::DOWN:
-        program = (NUM_PROGS + (program - 1)) % 16;
+        brightness = (brightness + 32) % 256;
         break;
       case IRCode::HASHTAG:
         reset();
