@@ -23,63 +23,32 @@
 
 #include <FastLED.h>
 #include <IRremote.h>
+#include "globals.hpp"
+#include "consts.hpp"
+#include "prgs.hpp"
+#include "helper.hpp"
 
-// Define sensor pin
-constexpr int RECV_PIN = 4;
- 
-// Define IR Receiver and Results Objects
-IRrecv irrecv(RECV_PIN);
-decode_results results;
-
-constexpr int NUM_PROGS = 16;
-constexpr int NUM_LIGHTS = 150;
-#define LED_TYPE    WS2811
-#define COLOR_ORDER GRB
-#define LED_PIN     5
-
-CRGB leds[NUM_LIGHTS];
-
-int program;
-int sped;
-int brightness;
-int color;
-
-constexpr long din_mamma_1 = 0x7100AB;
-constexpr long din_mamma_2 = 0xFF35AB;
-
-enum class IRCode : long int {
-  ONE     = 0xFFA25D,
-  TWO     = 0xFF629D,
-  THREE   = 0xFFE21D,
-  FOUR    = 0xFF22DD,
-  FIVE    = 0xFF02FD,
-  SIX     = 0xFFC23D,
-  SEVEN   = 0xFFE01F,
-  EIGHT   = 0xFFA857,
-  NINE    = 0xFF906F,
-  ZERO    = 0xFF9867,
-  ASTERIX = 0xFF6897,
-  HASHTAG = 0xFFB04F,
-  UPP     = 0xFF18E7,
-  DOWN    = 0xFF4AB5,
-  RIGHT   = 0xFF5AA5,
-  LEFT    = 0xFF10EF,
-  OK      = 0xFF38C7
-};
+void clear() {
+  for(int i = 0; i < NUM_LIGHTS; i++) {
+    leds[i] = CRGB(0, 0, 0);
+  }
+}
 
 void reset() {
-  program = 0;
+  last_program = 0;
+  program = 0;//NUM_PROGS-1;
   sped = 10;
   brightness = 128;
   color = 100;
 }
 
 void poll_inputs() {
-
   static char num_str[4] = "000";
   static char num_index = 0;
+  static int num = 0;
 
   if(num_index == 3) {
+    num = atoi(num_str);
     Serial.println(num_str);
     num_str[0] = '0';
     num_str[1] = '0';
@@ -96,23 +65,35 @@ void poll_inputs() {
 
     switch(ircode) {
       case IRCode::OK:
-        if(program == -1) program = 0;
+        if(program == -1) program = last_program;
         else              program = -1;
         break;
       case IRCode::LEFT:
         color += 20;
+        //color = num % 256;
         break;
       case IRCode::RIGHT:
         sped = (sped % 40) + 5;
+        //sped = (num < 1) * 1 + num;
         break;
       case IRCode::UPP:
         program = (program + 1) % NUM_PROGS;
+        //program = num % NUM_PROGS;
+        last_program = program;
         break;
       case IRCode::DOWN:
         brightness = (brightness + 32) % 256;
+        //brightness = num % 256;
         break;
       case IRCode::HASHTAG:
         reset();
+        break;
+      case IRCode::ASTERIX:
+        Serial.println("DEBUG INFO:");
+        Serial.print("Program:");     Serial.println(program);
+        Serial.print("Speed:");       Serial.println(sped);
+        Serial.print("Brightness:");  Serial.println(brightness);
+        Serial.print("Color:");       Serial.println(color);
         break;
       case IRCode::ZERO:
         num_str[num_index++] = '0';
@@ -154,7 +135,6 @@ void poll_inputs() {
 bool sleep(long int ms) {
   int current_program = program;
 
-
   unsigned long start_time = millis();
   while(millis() < start_time + ms) {
     poll_inputs();
@@ -185,348 +165,6 @@ void setup() {
   reset();
 }
 
-void prg_epelepsi_many_colors() {
-  char change[NUM_LIGHTS];
-
-  for(int i = 0; i < NUM_LIGHTS; i++)  {
-    sleep(sped);
-    leds[i] = CHSV(color%255, 255, brightness%255);
-    if(random(2) == 0) change[i] = 1;
-    else change[i] = -1;
-  }
-
-  char c = 0;
-  while(sleep(sped)) {
-    
-    for(int i = 0; i < NUM_LIGHTS; i++)  {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.h += change[i];
-      led.v += change[i];
-      leds[i] = led;
-    }
-    
-    show();
-
-    if(c > 60) {
-      c = 0;
-      for(int i = 0; i < NUM_LIGHTS; i++) {
-        change[i] *= -1;
-      }
-    }
-
-    c += 1;
-  }
-}
-
-void prg_epelepsi_all_colors() {
-  char change[NUM_LIGHTS];
-
-  for(int i = 0; i < NUM_LIGHTS; i++)  {
-    leds[i] = CHSV(random(256), 255, brightness%255);
-    if(random(2) == 0) change[i] = 2;
-    else change[i] = -2;
-  }
-
-  char c = 0;
-
-  while(sleep(sped)) {
-    for(int i = 0; i < NUM_LIGHTS; i++)  {
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.h += change[i];
-      led.v += change[i];
-      leds[i] = led;
-    }
-    show();
-
-    if(c >= 60) {
-      c = 0;
-      for(int i = 0; i < NUM_LIGHTS; i++) {
-        change[i] *= -1;
-      }
-    }
-
-    c += 1;
-  }
-}
-
-void prg_epelepsi_single_color() {
-  char change[NUM_LIGHTS];
-
-  for(int i = 0; i < NUM_LIGHTS; i++)  {
-    leds[i] = CHSV(color, 255, (brightness+random(80))%255);
-    if(random(2) == 0) change[i] = 1;
-    else change[i] = -1;
-  }
-
-  char c = 0;
-
-  while(sleep(sped)) {
-    for(int i = 0; i < NUM_LIGHTS; i++)  {
-      //sleep(sped);
-      CHSV led = rgb2hsv_approximate(leds[i]);
-      led.h += change[i];
-      led.v += change[i];
-      leds[i] = led;
-    }
-    show();
-
-    if(c >= 255) {
-      c = 0;
-      for(int i = 0; i < NUM_LIGHTS; i++) {
-        change[i] *= -1;
-      }
-    }
-
-    c += 1;
-  }
-}
-
-void prg_single_color() {
-  while(sleep(sped)) {
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(color, 255, brightness);
-    }
-    show();
-  }
-}
-
-void prg_many_colors() {
-  while(sleep(sped)) {
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(color+((float)i/NUM_LIGHTS)*160, 255, brightness);
-    }
-    show();
-  }
-}
-
-void prg_fade_in_out_single_color() {
-  int j = 0;
-  while(sleep(sped)) {
-    j += 1;
-
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
-
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(color, 255, b);
-    }
-
-    show();
-  }
-}
-
-void prg_fade_in_out_many_colors() {
-  int j = 0;
-  while(sleep(sped)) {
-    j += 1;
-    
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
-
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV((color+i)%256, 255, b);
-    }
-
-    show();
-  }
-}
-
-void prg_sin_single_color() {
-  int j = 0;
-  while(sleep(sped)) {
-    j += 1;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
-      
-      leds[i] = CHSV(color, 255, b);
-    }
-
-    show();
-  }
-}
-
-void prg_sin_many_colors() {
-  int j = 0;
-  while(sleep(sped)) {
-    j += 1;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      char c = color+b;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
-      
-      leds[i] = CHSV(c, 255, b);
-    }
-
-    show();
-  }
-}
-
-void prg_comet_single_color() {
-  int trail_length = 12;
-  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[i-j] = CHSV(color, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
-    sleep(sped);
-    show();
-  }
-}
-
-void prg_comet_many_colors() {
-  int trail_length = 12;
-  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[i-j] = CHSV(color+i, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
-    sleep(sped);
-    show();
-  }
-}
-
-void prg_ping_pong_single_color() {
-  static char dir = 0;
-
-  int trail_length = 12;
-  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[abs((NUM_LIGHTS * -dir)+(i-j))] = CHSV(color, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
-    sleep(sped);
-    show();
-  }
-
-  dir = !dir;
-}
-
-void prg_ping_pong_many_colors() {
-  static char dir = 0;
-
-  int trail_length = 12;
-  for(int i = 0; i < NUM_LIGHTS+trail_length; i++) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[abs((NUM_LIGHTS * -dir)+(i-j))] = CHSV(color+i, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
-    sleep(sped);
-    show();
-  }
-
-  dir = !dir;
-}
-
-extern const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM;
-
-const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM = 
-{
-    0xBD0000, //RED
-    0x14AC00, //GREEN
-    0xFFD700, //GOLD
-
-    0xBD0000,
-    0x14AC00,
-    0xFFD700,
-
-    0xBD0000,
-    0x14AC00,
-    0xFFD700,
-
-    0xBD0000,
-    0x14AC00,
-    0xFFD700,
-
-    0xBD0000,
-};
-
-void prg_christmas() {
-  TBlendType current_blending = LINEARBLEND;
-  static int color_index = 0;
-
-  while(sleep(sped)) {
-    int x = color_index;
-    color_index += 1;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = ColorFromPalette( CRISTHMAS_PALLETTE_P, x, brightness, current_blending);
-      x += 3;
-    }
-    show();
-  }
-}
-
-void prg_rainbow() {
-  int j = 0;
-  while(sleep(sped)) {
-    j += 1;
-
-    CHSV rainbow[NUM_LIGHTS];
-    fill_rainbow(rainbow, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
-    
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      rainbow[i].v = brightness;
-      leds[i] = rainbow[i];
-    }
-
-    show();
-  }
-}
-
-
-void prg_random() {
-  randomSeed(analogRead(0));
-  CRGBPalette16 palette(
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness)
-  );
-  
-  TBlendType current_blending = LINEARBLEND;
-  static int color_index = 0;
-
-  while(sleep(sped)) {
-    int x = color_index;
-    color_index += 1;
-    for( int i = 0; i < NUM_LIGHTS; i++) {
-        leds[i] = ColorFromPalette(palette, x, brightness, current_blending);
-        x += 3;
-    }
-    show();
-  }
-}
-
-void prg_off() {
-  for(CRGB& l : leds) l = CRGB(0, 0, 0);
-  show();
-  while(sleep(1000));   
-}
-
 void loop() {
   switch (program) {
     case-1: prg_off();                      break;
@@ -545,11 +183,13 @@ void loop() {
     case 12: prg_christmas();               break;
     case 13: prg_rainbow();                 break;
     case 14: prg_ping_pong_single_color();  break;
-    case 15: prg_ping_pong_many_colors();  break;
+    //case 15: prg_ping_pong_many_colors();   break;
+    case 15: prg_stars_single_color();      break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
       Serial.println(" IS INVALID!!!");
+      sleep(2000);
       break;
   }
 }
