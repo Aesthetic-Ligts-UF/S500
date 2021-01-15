@@ -36,7 +36,7 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = 0;//NUM_PROGS-1;
+  program = NUM_PROGS-1;
   sped = 10;
   brightness = 128;
   color = 100;
@@ -94,6 +94,7 @@ void poll_inputs() {
         Serial.print("Speed:");       Serial.println(sped);
         Serial.print("Brightness:");  Serial.println(brightness);
         Serial.print("Color:");       Serial.println(color);
+
         break;
       case IRCode::ZERO:
         num_str[num_index++] = '0';
@@ -149,6 +150,7 @@ bool sleep(long int ms) {
 
 void show() {
   if(irrecv.isIdle()) {
+    FastLED.setBrightness( brightness );
     FastLED.show();
   }
 }
@@ -159,7 +161,6 @@ void setup() {
 
   sleep( 1500 ); // power-up safety sleep
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( 80 );
   //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
 
   reset();
@@ -183,8 +184,11 @@ void loop() {
     case 12: prg_christmas();               break;
     case 13: prg_rainbow();                 break;
     case 14: prg_ping_pong_single_color();  break;
-    //case 15: prg_ping_pong_many_colors();   break;
-    case 15: prg_stars_single_color();      break;
+    case 15: prg_ping_pong_many_colors();   break;
+    case 16: prg_stars_single_color();      break;
+    case 17: prg_stars_all_color();         break;
+    case 18: prg_snake();                   break;
+    case 19: prg_grayscale();               break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
