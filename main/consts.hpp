@@ -27,7 +27,7 @@
 // Define sensor pin
 constexpr int RECV_PIN = 4;
 
-constexpr int NUM_PROGS = 22;
+constexpr int NUM_PROGS = 25;
 constexpr int NUM_LIGHTS = 150;
 
 

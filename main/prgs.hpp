@@ -544,6 +544,59 @@ void prg_grayscale() {
   }
 }
 
+void prg_every_other_led() {
+  while(sleep(sped)) {
+    for(int i = 0; i < NUM_LIGHTS; i+=2) {
+      leds[i] = CHSV(color, 255, brightness);
+      leds[(i+1)%256] = CHSV(color+127, 255, brightness);
+    }
+
+    show();
+  }
+}
+
+void prg_every_other_led_fade() {
+  int j = 0;
+
+  while(sleep(sped)) {
+
+    for(int i = 0; i < NUM_LIGHTS; i+=2) {
+      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+
+
+      b = min(brightness+b, 255.0);
+      b = max(b, 0.0);
+
+      leds[i] = CHSV(color, 255, b);
+      leds[(i+1)%256] = CHSV(color+127, 255, 255-b);
+    }
+
+    j += 1;
+
+    show();
+  }
+}
+
+void prg_fill_from_center() {
+  int size = 1;
+
+  while(sleep(sped)) {
+
+    for(int i = NUM_LIGHTS/2-size; i < NUM_LIGHTS/2+size; i++) {
+      leds[i] = CHSV(color, 255, brightness);
+    }
+
+    size += 1;
+
+    if(size >= NUM_LIGHTS/2) {
+      size = 1;
+      clear();
+    }
+
+    show();
+  }
+}
+
 void prg_firework() {
   while(sleep(sped)) {
 

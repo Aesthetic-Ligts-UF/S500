@@ -191,6 +191,9 @@ void loop() {
     case 19: prg_grayscale();                 break;
     case 20: prg_fade_between_single_colors();break;
     case 21: prg_fade_between_many_colors();  break;
+    case 22: prg_every_other_led();           break;
+    case 23: prg_every_other_led_fade();      break;
+    case 24: prg_fill_from_center();          break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
