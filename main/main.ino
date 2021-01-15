@@ -69,7 +69,7 @@ void poll_inputs() {
         else              program = -1;
         break;
       case IRCode::LEFT:
-        color += 20;
+        color = (color + 20) % 256;
         //color = num % 256;
         break;
       case IRCode::RIGHT:
@@ -168,27 +168,29 @@ void setup() {
 
 void loop() {
   switch (program) {
-    case-1: prg_off();                      break;
-    case 0: prg_single_color();             break;
-    case 1: prg_many_colors();              break;
-    case 2: prg_comet_single_color();       break;
-    case 3: prg_comet_many_colors();        break;
-    case 4: prg_sin_single_color();         break;
-    case 5: prg_sin_many_colors();          break;
-    case 6: prg_epelepsi_single_color();    break;
-    case 7: prg_epelepsi_many_colors();     break;
-    case 8: prg_epelepsi_all_colors();      break;
-    case 9: prg_fade_in_out_single_color(); break;
-    case 10: prg_fade_in_out_many_colors(); break;
-    case 11: prg_random();                  break;
-    case 12: prg_christmas();               break;
-    case 13: prg_rainbow();                 break;
-    case 14: prg_ping_pong_single_color();  break;
-    case 15: prg_ping_pong_many_colors();   break;
-    case 16: prg_stars_single_color();      break;
-    case 17: prg_stars_all_color();         break;
-    case 18: prg_snake();                   break;
-    case 19: prg_grayscale();               break;
+    case-1: prg_off();                        break;
+    case 0: prg_single_color();               break;
+    case 1: prg_many_colors();                break;
+    case 2: prg_comet_single_color();         break;
+    case 3: prg_comet_many_colors();          break;
+    case 4: prg_sin_single_color();           break;
+    case 5: prg_sin_many_colors();            break;
+    case 6: prg_epelepsi_single_color();      break;
+    case 7: prg_epelepsi_many_colors();       break;
+    case 8: prg_epelepsi_all_colors();        break;
+    case 9: prg_fade_in_out_single_color();   break;
+    case 10: prg_fade_in_out_many_colors();   break;
+    case 11: prg_random();                    break;
+    case 12: prg_christmas();                 break;
+    case 13: prg_rainbow();                   break;
+    case 14: prg_ping_pong_single_color();    break;
+    case 15: prg_ping_pong_many_colors();     break;
+    case 16: prg_stars_single_color();        break;
+    case 17: prg_stars_all_color();           break;
+    case 18: prg_snake();                     break;
+    case 19: prg_grayscale();                 break;
+    case 20: prg_fade_between_single_colors();break;
+    case 21: prg_fade_between_many_colors();  break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);

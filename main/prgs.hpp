@@ -164,6 +164,46 @@ void prg_fade_in_out_many_colors() {
   }
 }
 
+void prg_fade_between_single_colors() {  
+  int j = 0;
+  while(sleep(sped)) {
+    j += 1;
+
+    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+    b = min(brightness+b, 255.0);
+    b = max(b, 0.0);
+
+    float c = sin((float)j/(float)NUM_LIGHTS*3.1415)*80.0;
+    c = max(c, 0.0);
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV((int)(c+color)%256, 255, b);
+    }
+
+    show();
+  }
+}
+
+void prg_fade_between_many_colors() {
+  int j = 0;
+  while(sleep(sped)) {
+    j += 1;
+
+    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+    b = min(brightness+b, 255.0);
+    b = max(b, 0.0);
+
+    float c = sin((float)j/(float)NUM_LIGHTS*3.1415)*80.0;
+    c = max(c, 0.0);
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV(((int)c+i+color)%256, 255, b);
+    }
+
+    show();
+  }
+}
+
 void prg_sin_single_color() {
   int j = 0;
   while(sleep(sped)) {
