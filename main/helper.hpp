@@ -25,23 +25,24 @@
 #define HELPER_H_INCLUDED
 
 enum class IRCode : long int {
-  ONE     = 0xFFA25D,
-  TWO     = 0xFF629D,
-  THREE   = 0xFFE21D,
-  FOUR    = 0xFF22DD,
-  FIVE    = 0xFF02FD,
-  SIX     = 0xFFC23D,
-  SEVEN   = 0xFFE01F,
-  EIGHT   = 0xFFA857,
-  NINE    = 0xFF906F,
-  ZERO    = 0xFF9867,
-  ASTERIX = 0xFF6897,
-  HASHTAG = 0xFFB04F,
-  UPP     = 0xFF18E7,
-  DOWN    = 0xFF4AB5,
-  RIGHT   = 0xFF5AA5,
-  LEFT    = 0xFF10EF,
-  OK      = 0xFF38C7
+  One     = 0xFFA25D,
+  Two     = 0xFF629D,
+  Three   = 0xFFE21D,
+  Four    = 0xFF22DD,
+  Five    = 0xFF02FD,
+  Six     = 0xFFC23D,
+  Seven   = 0xFFE01F,
+  Eight   = 0xFFA857,
+  Nine    = 0xFF906F,
+  Zero    = 0xFF9867,
+  Asterix = 0xFF6897,
+  Hashtag = 0xFFB04F,
+  Upp     = 0xFF18E7,
+  Down    = 0xFF4AB5,
+  Right   = 0xFF5AA5,
+  Left    = 0xFF10EF,
+  Ok      = 0xFF38C7,
+  Repeat  = 0xFFFFFF
 };
 
 void reset();

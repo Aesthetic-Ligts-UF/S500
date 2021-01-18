@@ -36,95 +36,131 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = NUM_PROGS-1;
-  sped = 10;
+  program = 8;//NUM_PROGS-1;
+  sped = 1;
   brightness = 128;
   color = 100;
+
+  clear();
 }
 
 void poll_inputs() {
-  static char num_str[4] = "000";
+  static char num_str[4] = "0\0\0";
   static char num_index = 0;
   static int num = 0;
+  static long int num_last_time = 0;
+
+  if(millis() > num_last_time + 2000 && num_index != 0) {
+    num_index = 3;
+  }
 
   if(num_index == 3) {
     num = atoi(num_str);
     Serial.println(num_str);
     num_str[0] = '0';
-    num_str[1] = '0';
-    num_str[2] = '0';
+    num_str[1] = '\0';
+    num_str[2] = '\0';
     num_index = 0;
   }
 
   if(irrecv.decode(&results)) {
     // Print Code in HEX
-    Serial.println(results.value, HEX);
+    //Serial.println(results.value, HEX);
     irrecv.resume();
 
     IRCode ircode = (IRCode)results.value;
 
     switch(ircode) {
-      case IRCode::OK:
+      case IRCode::Zero:
+        num_str[num_index++] = '0';
+        num_last_time = millis();
+        break;
+      case IRCode::One:
+        num_str[num_index++] = '1';
+        num_last_time = millis();
+        break;
+      case IRCode::Two:
+        num_str[num_index++] = '2';
+        num_last_time = millis();
+        break;
+      case IRCode::Three:
+        num_str[num_index++] = '3';
+        num_last_time = millis();
+        break;
+      case IRCode::Four:
+        num_str[num_index++] = '4';
+        num_last_time = millis();
+        break;
+      case IRCode::Five:
+        num_str[num_index++] = '5';
+        num_last_time = millis();
+        break;
+      case IRCode::Six:
+        num_str[num_index++] = '6';
+        num_last_time = millis();
+        break;
+      case IRCode::Seven:
+        num_str[num_index++] = '7';
+        num_last_time = millis();
+        break;
+      case IRCode::Eight:
+        num_str[num_index++] = '8';
+        num_last_time = millis();
+        break;
+      case IRCode::Nine:
+        num_str[num_index++] = '9';
+        num_last_time = millis();
+        break;
+      case IRCode::Upp: case IRCode::Left: case IRCode::Down: case IRCode::Right:
+        num_index = 3;
+        break;
+      default:
+        break;
+    }
+
+    if(num_index == 3) {
+      num = atoi(num_str);
+      Serial.println(num_str);
+      num_str[0] = '0';
+      num_str[1] = '\0';
+      num_str[2] = '\0';
+      num_index = 0;
+    }
+    
+    switch(ircode) {
+      case IRCode::Ok:
         if(program == -1) program = last_program;
         else              program = -1;
         break;
-      case IRCode::LEFT:
-        color = (color + 20) % 256;
-        //color = num % 256;
+      case IRCode::Left:
+        //color = (color + 20) % 256;
+        color = num % 256;
         break;
-      case IRCode::RIGHT:
-        sped = (sped % 40) + 5;
-        //sped = (num < 1) * 1 + num;
+      case IRCode::Right:
+        //sped = (sped % 40) + 5;
+        sped = (num < 1) * 1 + num;
         break;
-      case IRCode::UPP:
-        program = (program + 1) % NUM_PROGS;
-        //program = num % NUM_PROGS;
+      case IRCode::Upp:
+        clear();
+        //program = (program + 1) % NUM_PROGS;
+        program = num % NUM_PROGS;
         last_program = program;
         break;
-      case IRCode::DOWN:
-        brightness = (brightness + 32) % 256;
-        //brightness = num % 256;
+      case IRCode::Down:
+        //brightness = (brightness + 32) % 256;
+        brightness = num % 256;
         break;
-      case IRCode::HASHTAG:
+      case IRCode::Hashtag:
         reset();
         break;
-      case IRCode::ASTERIX:
+      case IRCode::Asterix:
         Serial.println("DEBUG INFO:");
         Serial.print("Program:");     Serial.println(program);
         Serial.print("Speed:");       Serial.println(sped);
         Serial.print("Brightness:");  Serial.println(brightness);
         Serial.print("Color:");       Serial.println(color);
+        Serial.print("Num:");         Serial.println(num);
 
-        break;
-      case IRCode::ZERO:
-        num_str[num_index++] = '0';
-        break;
-      case IRCode::ONE:
-        num_str[num_index++] = '1';
-        break;
-      case IRCode::TWO:
-        num_str[num_index++] = '2';
-        break;
-      case IRCode::THREE:
-        num_str[num_index++] = '3';
-        break;
-      case IRCode::FOUR:
-        num_str[num_index++] = '4';
-        break;
-      case IRCode::FIVE:
-        num_str[num_index++] = '5';
-        break;
-      case IRCode::SIX:
-        num_str[num_index++] = '6';
-        break;
-      case IRCode::SEVEN:
-        num_str[num_index++] = '7';
-        break;
-      case IRCode::EIGHT:
-        num_str[num_index++] = '8';
-        break;
-      case IRCode::NINE:
-        num_str[num_index++] = '9';
         break;
       default:
         break;
@@ -150,7 +186,6 @@ bool sleep(long int ms) {
 
 void show() {
   if(irrecv.isIdle()) {
-    FastLED.setBrightness( brightness );
     FastLED.show();
   }
 }
@@ -160,8 +195,9 @@ void setup() {
   irrecv.enableIRIn();
 
   sleep( 1500 ); // power-up safety sleep
+
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
-  //FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LIGHTS);
+  FastLED.setBrightness( 255 );
 
   reset();
 }
@@ -194,6 +230,7 @@ void loop() {
     case 22: prg_every_other_led();           break;
     case 23: prg_every_other_led_fade();      break;
     case 24: prg_fill_from_center();          break;
+    case 25: prg_fill_from_sides();           break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);

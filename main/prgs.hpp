@@ -29,6 +29,7 @@
 
 #include <FastLED.h>
 #include <IRremote.h>
+#include <lib8tion.h>
 
 void prg_epelepsi_single_color() {
   unsigned char offset[100];
@@ -46,7 +47,8 @@ void prg_epelepsi_single_color() {
     l += 5;
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      //float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      int b = (sin8(i+l+offset[i]) - 127) >> 1;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       leds[i] = CHSV(color, 255, b);
@@ -72,7 +74,8 @@ void prg_epelepsi_many_colors() {
     l += 5;
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      //float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      int b = (sin8(i+l+offset[i]) - 127) >> 1;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
       leds[i] = CHSV(color+offset[i], 255, b);
@@ -99,9 +102,10 @@ void prg_epelepsi_all_colors() {
     l += 5;
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
+      //float b = sin8((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
+      int b = (sin8(i+l+offset[i]) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
       leds[i] = CHSV(offset[i], 255, b);
     }
 
@@ -135,9 +139,9 @@ void prg_fade_in_out_single_color() {
   while(sleep(sped)) {
     j += 1;
 
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
+    int b = (sin8(j) - 127) >> 1;
+    b = min(brightness+b, 255);
+    b = max(b, 0);
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, 255, b);
@@ -151,10 +155,10 @@ void prg_fade_in_out_many_colors() {
   int j = 0;
   while(sleep(sped)) {
     j += 1;
-    
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
+
+    int b = (sin8(j) - 127) >> 1;
+    b = min(brightness+b, 255);
+    b = max(b, 0);
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV((color+i)%256, 255, b);
@@ -169,15 +173,15 @@ void prg_fade_between_single_colors() {
   while(sleep(sped)) {
     j += 1;
 
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
+    int b = (sin8(j) - 127) >> 1;
+    b = min(brightness+b, 255);
+    b = max(b, 0);
 
-    float c = sin((float)j/(float)NUM_LIGHTS*3.1415)*80.0;
-    c = max(c, 0.0);
+    int c = (sin8(j / 2) - 127) >> 1;
+    c = max(c, 0);
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV((int)(c+color)%256, 255, b);
+      leds[i] = CHSV((c+color)%256, 255, b);
     }
 
     show();
@@ -189,15 +193,15 @@ void prg_fade_between_many_colors() {
   while(sleep(sped)) {
     j += 1;
 
-    float b = sin((float)j/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-    b = min(brightness+b, 255.0);
-    b = max(b, 0.0);
+    int b = (sin8(j) - 127) >> 1;
+    b = min(brightness+b, 255);
+    b = max(b, 0);
 
-    float c = sin((float)j/(float)NUM_LIGHTS*3.1415)*80.0;
-    c = max(c, 0.0);
+    int c = (sin8(j / 2) - 127) >> 1;
+    c = max(c, 0);
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(((int)c+i+color)%256, 255, b);
+      leds[i] = CHSV((c+i+color)%256, 255, b);
     }
 
     show();
@@ -209,9 +213,9 @@ void prg_sin_single_color() {
   while(sleep(sped)) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
+      int b = (sin8(i+j) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
       
       leds[i] = CHSV(color, 255, b);
     }
@@ -225,12 +229,11 @@ void prg_sin_many_colors() {
   while(sleep(sped)) {
     j += 1;
     for(int i = 0; i < NUM_LIGHTS; i++) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      char c = color+b;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
+      int b = (sin8(i+j) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
       
-      leds[i] = CHSV(c, 255, b);
+      leds[i] = CHSV(color+b, 255, b);
     }
 
     show();
@@ -354,9 +357,13 @@ void prg_stars_single_color() {
     l += 1;
 
     for(int i = 0; i < 100; i++) {
-      float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
+      
+      /*float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
+      b = max(b, 0.0);*/
+      int b = (sin8(i+l+offset[i]) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
       leds[stars[i]] = CHSV(color, 55, b);
     }
 
@@ -385,14 +392,15 @@ void prg_stars_all_color() {
     l += 1;
 
     for(int i = 0; i < 100; i++) {
-      float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
+      /*float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
-      leds[stars[i]] = CHSV(color+offset[i], 55, b);
+      leds[stars[i]] = CHSV(color+offset[i], 55, b);*/
 
-      //if(b < 1.0) {
-        //stars[i] = random(NUM_LIGHTS);
-      //}
+      int b = (sin8(i+l+offset[i]) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
+      leds[stars[i]] = CHSV(color+offset[i], 55, b);
     }
 
     show();
@@ -561,11 +569,13 @@ void prg_every_other_led_fade() {
   while(sleep(sped)) {
 
     for(int i = 0; i < NUM_LIGHTS; i+=2) {
-      float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-
-
+      /*float b = sin((float)(i+j)/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
+      b = max(b, 0.0);*/
+
+      int b = (sin8(i+j) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
 
       leds[i] = CHSV(color, 255, b);
       leds[(i+1)%256] = CHSV(color+127, 255, 255-b);
@@ -582,6 +592,12 @@ void prg_fill_from_center() {
 
   while(sleep(sped)) {
 
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i].r *= 0.9;
+      leds[i].g *= 0.9;
+      leds[i].b *= 0.9;
+    }
+
     for(int i = NUM_LIGHTS/2-size; i < NUM_LIGHTS/2+size; i++) {
       leds[i] = CHSV(color, 255, brightness);
     }
@@ -590,7 +606,32 @@ void prg_fill_from_center() {
 
     if(size >= NUM_LIGHTS/2) {
       size = 1;
-      clear();
+    }
+
+    show();
+  }
+}
+
+void prg_fill_from_sides() {
+  int size = 1;
+
+  while(sleep(sped)) {
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i].r *= 0.9;
+      leds[i].g *= 0.9;
+      leds[i].b *= 0.9;
+    }
+
+    for(int i = 0; i < size; i++) {
+      leds[i]               = CHSV(color, 255, brightness);
+      leds[NUM_LIGHTS-i-1]  = CHSV(color, 255, brightness);
+    }
+
+    size += 1;
+
+    if(size >= NUM_LIGHTS/2) {
+      size = 0;
     }
 
     show();
