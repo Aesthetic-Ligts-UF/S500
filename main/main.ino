@@ -36,7 +36,7 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = 8;//NUM_PROGS-1;
+  program = NUM_PROGS-1;
   sped = 1;
   brightness = 128;
   color = 100;
@@ -112,7 +112,8 @@ void poll_inputs() {
         num_last_time = millis();
         break;
       case IRCode::Upp: case IRCode::Left: case IRCode::Down: case IRCode::Right:
-        num_index = 3;
+        if(num_index != 0)
+          num_index = 3;
         break;
       default:
         break;
@@ -167,6 +168,19 @@ void poll_inputs() {
     }
   }
 }
+
+void rotate(char amount) {
+  CRGB temp[NUM_LIGHTS];  
+
+  for(int i = 0; i < NUM_LIGHTS; i++) {
+    temp[(i+amount+NUM_LIGHTS)%NUM_LIGHTS] = leds[i%NUM_LIGHTS];
+  }
+
+  for(int i = 0; i < NUM_LIGHTS; i++) {
+    leds[i] = temp[i];
+  }
+}
+
 
 //TODO return a bool if the current program should be changed
 bool sleep(long int ms) {
@@ -231,6 +245,10 @@ void loop() {
     case 23: prg_every_other_led_fade();      break;
     case 24: prg_fill_from_center();          break;
     case 25: prg_fill_from_sides();           break;
+    case 26: prg_fill_from_sides_and_back();  break;
+    case 27: prg_fill_from_sides_and_fade();  break;
+    case 28: prg_bouncing_rainbow();          break;
+    case 29: prg_every_other_led_rotating();  break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);

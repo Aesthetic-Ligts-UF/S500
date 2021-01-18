@@ -289,9 +289,11 @@ void prg_ping_pong_single_color() {
 
   char dir = 0;
   int i = 0;
+  //int t = 0;
   
   while(sleep(sped)) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
+    //if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
+    clear();
     for(int j = 0; j < trail_length; j++) {
       if(i-j > 0 && i-j < NUM_LIGHTS) {
         leds[abs((NUM_LIGHTS * -dir)+(i-j))] = CHSV(color, 255, brightness * (1.0 - (float)j/trail_length));
@@ -306,9 +308,14 @@ void prg_ping_pong_single_color() {
     }
 
     show();
-  }
 
-  dir = !dir;
+    /*if(millis() % 1000 < 10) {
+      Serial.println(t);
+      t = 0;
+    }
+
+    t += 1;*/
+  }
 }
 
 void prg_ping_pong_many_colors() {
@@ -318,7 +325,8 @@ void prg_ping_pong_many_colors() {
   int i = 0;
   
   while(sleep(sped)) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
+    clear();
+    //if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
     for(int j = 0; j < trail_length; j++) {
       if(i-j > 0 && i-j < NUM_LIGHTS) {
         leds[abs((NUM_LIGHTS * -dir)+(i-j))] = CHSV(color+i, 255, brightness * (1.0 - (float)j/trail_length));
@@ -587,6 +595,38 @@ void prg_every_other_led_fade() {
   }
 }
 
+void prg_every_other_led_rotating() {
+  int j = 0;
+  int index = 0;
+
+  while(sleep(sped)) {
+
+    for(int i = 1; i < NUM_LIGHTS; i+=2) {
+      int b = (sin8(i+j) - 127) >> 1;
+      b = min(brightness+b, 255);
+      b = max(b, 0);
+
+      leds[(i+index)%NUM_LIGHTS]              = CHSV(color, 255, b);
+      leds[(i+1-index+NUM_LIGHTS)%NUM_LIGHTS] = CHSV(color+127, 255, 255-b);
+
+      //Serial.println((i+index)%NUM_LIGHTS);
+      //Serial.println((i+1-index+NUM_LIGHTS)%NUM_LIGHTS);
+      //Serial.println();
+    }
+
+    //while(1);
+
+    j += 1;
+    index += 2;
+
+    if(index >= NUM_LIGHTS) {
+      index = 0;
+    }
+
+    show();
+  }
+}
+
 void prg_fill_from_center() {
   int size = 1;
 
@@ -634,6 +674,85 @@ void prg_fill_from_sides() {
       size = 0;
     }
 
+    show();
+  }
+}
+
+void prg_fill_from_sides_and_back() {
+  int size = 1;
+  char dir = 0;
+
+  while(sleep(sped)) {
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i].r *= 0.9;
+      leds[i].g *= 0.9;
+      leds[i].b *= 0.9;
+    }
+
+    for(int i = 0; i < size; i++) {
+      leds[i]               = CHSV(color, 255, brightness);
+      leds[NUM_LIGHTS-i-1]  = CHSV(color, 255, brightness);
+    }
+
+    size += (dir * 2) - 1;
+
+    if(size >= NUM_LIGHTS/2 || size < 0) {
+      dir ^= 1;
+    }
+
+    show();
+  }
+}
+
+void prg_fill_from_sides_and_fade() {
+  int size = 1;
+  char dir = 0;
+
+  while(sleep(sped)) {
+
+    if(dir == 1) {
+      for(int i = 0; i < size; i++) {
+        leds[i]               = CHSV(color, 255, brightness);
+        leds[NUM_LIGHTS-i-1]  = CHSV(color, 255, brightness);
+      }
+    } else {
+      for(int i = 0; i < (NUM_LIGHTS / 2 - 1) - size; i++) {
+        leds[i].r *= 0.9;
+        leds[i].g *= 0.9;
+        leds[i].b *= 0.9;
+        leds[NUM_LIGHTS-i-1].r *= 0.9;
+        leds[NUM_LIGHTS-i-1].g *= 0.9;
+        leds[NUM_LIGHTS-i-1].b *= 0.9;
+      }
+    }
+
+    size += (dir * 2) - 1;
+
+    if(size >= NUM_LIGHTS/2 || size < -16) {
+      dir ^= 1;
+    }
+
+    show();
+  }
+}
+
+void prg_bouncing_rainbow() {
+  int index = 0;
+  char dir = 0;
+
+  while(sleep(sped)) {
+    if(index >= NUM_LIGHTS || index < 0) {
+      dir ^= 1;
+    }
+
+    index += (dir * 2) - 1;
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[(i+index+NUM_LIGHTS)%NUM_LIGHTS] = CHSV(color+i, 255, brightness);
+    }
+    //rotate((dir * 2) - 1);
+    
     show();
   }
 }

@@ -50,5 +50,6 @@ void poll_inputs();
 bool sleep(long int ms);
 void show();
 void clear();
+void rotate(char amount);
 
 #endif
