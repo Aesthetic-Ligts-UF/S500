@@ -208,6 +208,57 @@ void prg_fade_between_many_colors() {
   }
 }
 
+void prg_fade_to_white_single_color() {  
+  int j = 0;
+  while(sleep(sped)) {
+    j += 1;
+
+    int s = sin8(j);
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV(color, s, brightness);
+    }
+
+    show();
+  }
+}
+
+void prg_fade_to_white_single_color_change() {  
+  int j = 0;
+  while(sleep(sped)) {
+    j += 1;
+
+    int s = sin8(j);
+
+    int c = (sin8(j / 2) - 127) >> 1;
+    c = max(c, 0);
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV((c+color)%256, s, brightness);
+    }
+
+    show();
+  }
+}
+
+void prg_fade_to_white_many_colors() {
+  int j = 0;
+  while(sleep(sped)) {
+    j += 1;
+
+    int s = sin8(j);
+
+    int c = (sin8(j / 2) - 127) >> 1;
+    c = max(c, 0);
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV((c+i+color)%256, s, brightness);
+    }
+
+    show();
+  }
+}
+
 void prg_sin_single_color() {
   int j = 0;
   while(sleep(sped)) {
@@ -245,12 +296,8 @@ void prg_comet_single_color() {
 
   int i = 0;
   while(sleep(sped)) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[i-j] = CHSV(color, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
+    clear();
+    draw_tail_single_color(i, trail_length, 0, color);
 
     i++;
 
@@ -267,12 +314,8 @@ void prg_comet_many_colors() {
 
   int i = 0;
   while(sleep(sped)) {
-    if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
-    for(int j = 0; j < trail_length; j++) {
-      if(i-j > 0 && i-j < NUM_LIGHTS) {
-        leds[i-j] = CHSV(color+i, 255, brightness * (1.0 - (float)j/trail_length));
-      }
-    }
+    clear();
+    draw_tail_many_colors(i, trail_length, 0, color);
 
     i++;
 
@@ -284,16 +327,115 @@ void prg_comet_many_colors() {
   }
 }
 
+void prg_many_comets_single_color() {
+  srand(millis());
+
+  int trail_length = 12;
+
+  int comets[3];
+  char dir[3];
+
+  for(int i = 0; i < 3; i++) comets[i] = random(NUM_LIGHTS);
+  for(int i = 0; i < 3; i++) dir[i] = random(100) < 50;
+  
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 3; i++) {
+      draw_tail_single_color(comets[i], trail_length, 0, color);
+
+      comets[i] += (dir[i]*2)-1;
+
+      if(comets[i] >= NUM_LIGHTS+trail_length) {
+        comets[i] = 0;
+      } else if(comets[i] < 0) {
+        comets[i] = NUM_LIGHTS-1-comets[i];
+      }
+
+      if(random(10000) > 9940) {
+        dir[i] = random(100) < 50;
+      }
+    }
+
+    show();
+  }
+}
+
+void prg_many_comets_single_color_one_dir() {
+  srand(millis());
+
+  int trail_length = 12;
+
+  int comets[3];
+  char dir[3];
+
+  comets[0] = 20;
+  comets[1] = 60;
+  comets[2] = 120;
+  for(int i = 0; i < 3; i++) dir[i] = 1;
+  
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 3; i++) {
+      draw_tail_single_color(comets[i], trail_length, 0, color);
+
+      comets[i] += (dir[i]*2)-1;
+
+      if(comets[i] >= NUM_LIGHTS+trail_length) {
+        comets[i] = 0;
+      } else if(comets[i] < 0) {
+        comets[i] = NUM_LIGHTS-1-comets[i];
+      }
+    }
+
+    show();
+  }
+}
+
+void prg_many_comets_many_colors() {
+  srand(millis());
+
+  int trail_length = 12;
+
+  int comets[3];
+  char dir[3];
+
+  for(int i = 0; i < 3; i++) comets[i] = random(NUM_LIGHTS);
+  for(int i = 0; i < 3; i++) dir[i] = random(100) < 50;
+  
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 3; i++) {
+      draw_tail_many_colors(comets[i], trail_length, 0, color);
+
+      comets[i] += (dir[i]*2)-1;
+
+      if(comets[i] >= NUM_LIGHTS+trail_length) {
+        comets[i] = 0;
+      } else if(comets[i] < 0) {
+        comets[i] = NUM_LIGHTS-1-comets[i];
+      }
+
+      if(random(10000) > 9940) {
+        dir[i] = random(100) < 50;
+      }
+    }
+
+    show();
+  }
+}
+
 void prg_ping_pong_single_color() {
   int trail_length = 12;
 
   char dir = 0;
   int i = 0;
-  //int t = 0;
   
   while(sleep(sped)) {
-    //if(i > trail_length-1 && i < NUM_LIGHTS+trail_length) { leds[i-trail_length] = CRGB(0, 0, 0); }
     clear();
+
     for(int j = 0; j < trail_length; j++) {
       if(i-j > 0 && i-j < NUM_LIGHTS) {
         leds[abs((NUM_LIGHTS * -dir)+(i-j))] = CHSV(color, 255, brightness * (1.0 - (float)j/trail_length));
@@ -308,13 +450,6 @@ void prg_ping_pong_single_color() {
     }
 
     show();
-
-    /*if(millis() % 1000 < 10) {
-      Serial.println(t);
-      t = 0;
-    }
-
-    t += 1;*/
   }
 }
 
@@ -467,6 +602,52 @@ void prg_rainbow() {
     }
 
     show();
+  }
+}
+
+void prg_rainbow_every_other() {
+  int j = 0;
+  while(sleep(sped)) {
+    clear();
+
+    CHSV rainbow[NUM_LIGHTS];
+    fill_rainbow(rainbow, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
+    
+    for(int i = 0; i < NUM_LIGHTS; i+=2) {
+      rainbow[i].v = brightness;
+      leds[i] = rainbow[i];
+    }
+
+    show();
+
+    j += 1;
+  }
+}
+
+void prg_rainbow_every_other_rotating() {
+  int j = 0;
+
+  CHSV rainbow[NUM_LIGHTS];
+  fill_rainbow(rainbow, NUM_LIGHTS, color, 255/NUM_LIGHTS);
+  for(int i = 0; i < NUM_LIGHTS; i++) {
+    rainbow[i].v = brightness;
+  }
+
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < NUM_LIGHTS; i+=2) {
+      CHSV brighter = rainbow[i];
+      brighter.v = brightness*(j%100)/100;
+      CHSV darker = rainbow[i];
+      darker.v = brightness*(99-(j%100))/100;
+      leds[(i+j/100)%NUM_LIGHTS] = brighter;
+      leds[(i+j/100+1)%NUM_LIGHTS] = darker;
+    }
+
+    show();
+
+    j += 1;
   }
 }
 
@@ -757,9 +938,84 @@ void prg_bouncing_rainbow() {
   }
 }
 
-void prg_firework() {
-  while(sleep(sped)) {
+class FireWork {
+public:
+  int pos;
+  char dir;
+  int time;
+  int blew = 0;
 
+  FireWork() {
+    pos = random(NUM_LIGHTS);
+    dir = random(100) < 50;
+    time = random(60);
+  }
+
+  void update() {
+    pos = (pos + (dir*2)-1 + NUM_LIGHTS * 2) % (NUM_LIGHTS * 2);
+    blew += (dir*2)-1;
+    if(pos+time < 100) blew = 0;
+  }
+
+  void draw() {
+    draw_rocket(pos-blew, 12, dir, pos+time > 100);
+  }
+};
+
+void prg_firework() {
+  constexpr int tail_size = 16;
+
+  srand(millis());
+  
+  FireWork fireworks[3];
+
+  while(sleep(sped)) {
+    for(CRGB& led : leds) led.nscale8(251);
+
+    for(int i = 0; i < 3; i++) fireworks[i].update();
+    for(int i = 0; i < 3; i++) fireworks[i].draw();
+
+    show();
+  }
+}
+
+void prg_bounce() {
+  srand(millis());
+
+  int c = color;
+
+  int pos[2];
+  for(int i = 0; i < 2; i++) pos[i] = random(NUM_LIGHTS);
+
+  char dir[2];
+  dir[0] = 0;
+  dir[1] = 1;
+
+  char color[2];
+  for(int i = 0; i < 2; i++) color[i] = random(256);
+
+  while(sleep(sped)) {
+    for(CRGB& led : leds) led.nscale8(200);
+
+    for(int i = 0; i < 2; i++) {
+      draw_tail_single_color(pos[i], 8, dir[i], color[i]);
+      pos[i] = (pos[i] + (dir[i]*2)-1 + NUM_LIGHTS) % (NUM_LIGHTS);
+
+      for(int j = 0; j < 2; j++) {
+        if(pos[i] == pos[j] && i != j) {
+          color[j] = (color[j] + 5) % 256;
+          color[i] = (color[i] + 5) % 256;
+          dir[i] = !dir[i];
+          dir[j] = !dir[j];
+        }
+      }
+
+      if(random(10000) > 9940) {
+        color[i] = (color[i] + random(60)) % 256;
+        pos[i] = (pos[i] + random(8)) % NUM_LIGHTS; //TODO make sure that they dont spawn on the same posisiton
+      }
+    }
+    show();
   }
 }
 

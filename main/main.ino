@@ -65,7 +65,7 @@ void poll_inputs() {
 
   if(irrecv.decode(&results)) {
     // Print Code in HEX
-    //Serial.println(results.value, HEX);
+    Serial.println(results.value, HEX);
     irrecv.resume();
 
     IRCode ircode = (IRCode)results.value;
@@ -181,15 +181,57 @@ void rotate(char amount) {
   }
 }
 
+void draw_tail_single_color(unsigned char pos, char length, char dir, int color) {
+  for(int j = 0; j < length; j++) {
+    if(pos-j > 0 && pos-j < NUM_LIGHTS) {
+      //leds[abs((NUM_LIGHTS * -dir)+(pos-j))] = CHSV(color, 255, brightness * (1.0 - (float)j/length));
+      leds[pos-j] = CHSV(color, 255, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
+    }
+  }
+}
+
+void draw_tail_many_colors(unsigned char pos, char length, char dir, int color) {
+  for(int j = 0; j < length; j++) {
+    if(pos-j > 0 && pos-j < NUM_LIGHTS) {
+      leds[pos-j] = CHSV(color+pos-j, 255, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
+    }
+  }
+}
+
+
+void draw_rocket(int pos, char length, char dir, bool blow) {
+  if(!blow) {
+    for(int j = 0; j < length; j++) {
+      if(pos-j >= 0 && pos-j < NUM_LIGHTS) {
+        leds[pos-j] = CHSV(color, 205, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
+      }
+    }
+  } else {
+    for(int i = 0; i < 6; i++) {
+      int index = pos+random(32)-16;
+      if(index >= 0 && index < NUM_LIGHTS) {
+        CHSV led = rgb2hsv_approximate(leds[index]);// = CHSV(color, 205, min(255, max(brightness+random(64)-32, 0)));
+        led.v += random(32)+brightness-16;
+        led.h = color;
+        led.s = 205;
+        leds[index] = led;
+      }
+    }
+  }
+}
+
 
 //TODO return a bool if the current program should be changed
 bool sleep(long int ms) {
   int current_program = program;
 
-  unsigned long start_time = millis();
-  while(millis() < start_time + ms) {
+  static unsigned long start_time = millis();
+  
+  do {
     poll_inputs();
-  }
+  } while(millis() < start_time + ms);
+
+  start_time = millis();
 
   /*program = ((millis() / 1000) / 4) % 14;
   if(current_program != program) 
@@ -218,37 +260,47 @@ void setup() {
 
 void loop() {
   switch (program) {
-    case-1: prg_off();                        break;
-    case 0: prg_single_color();               break;
-    case 1: prg_many_colors();                break;
-    case 2: prg_comet_single_color();         break;
-    case 3: prg_comet_many_colors();          break;
-    case 4: prg_sin_single_color();           break;
-    case 5: prg_sin_many_colors();            break;
-    case 6: prg_epelepsi_single_color();      break;
-    case 7: prg_epelepsi_many_colors();       break;
-    case 8: prg_epelepsi_all_colors();        break;
-    case 9: prg_fade_in_out_single_color();   break;
-    case 10: prg_fade_in_out_many_colors();   break;
-    case 11: prg_random();                    break;
-    case 12: prg_christmas();                 break;
-    case 13: prg_rainbow();                   break;
-    case 14: prg_ping_pong_single_color();    break;
-    case 15: prg_ping_pong_many_colors();     break;
-    case 16: prg_stars_single_color();        break;
-    case 17: prg_stars_all_color();           break;
-    case 18: prg_snake();                     break;
-    case 19: prg_grayscale();                 break;
-    case 20: prg_fade_between_single_colors();break;
-    case 21: prg_fade_between_many_colors();  break;
-    case 22: prg_every_other_led();           break;
-    case 23: prg_every_other_led_fade();      break;
-    case 24: prg_fill_from_center();          break;
-    case 25: prg_fill_from_sides();           break;
-    case 26: prg_fill_from_sides_and_back();  break;
-    case 27: prg_fill_from_sides_and_fade();  break;
-    case 28: prg_bouncing_rainbow();          break;
-    case 29: prg_every_other_led_rotating();  break;
+    case-1: prg_off();                                break;
+    case 0: prg_single_color();                       break;
+    case 1: prg_many_colors();                        break;
+    case 2: prg_comet_single_color();                 break;
+    case 3: prg_comet_many_colors();                  break;
+    case 4: prg_sin_single_color();                   break;
+    case 5: prg_sin_many_colors();                    break;
+    case 6: prg_epelepsi_single_color();              break;
+    case 7: prg_epelepsi_many_colors();               break;
+    case 8: prg_epelepsi_all_colors();                break;
+    case 9: prg_fade_in_out_single_color();           break;
+    case 10: prg_fade_in_out_many_colors();           break;
+    case 11: prg_random();                            break;
+    case 12: prg_christmas();                         break;
+    case 13: prg_rainbow();                           break;
+    case 37: prg_rainbow_every_other();               break;
+    case 38: prg_rainbow_every_other_rotating();      break;
+    case 14: prg_ping_pong_single_color();            break;
+    case 15: prg_ping_pong_many_colors();             break;
+    case 16: prg_stars_single_color();                break;
+    case 17: prg_stars_all_color();                   break;
+    case 18: prg_snake();                             break;
+    case 19: prg_grayscale();                         break;
+    case 20: prg_fade_between_single_colors();        break;
+    case 21: prg_fade_between_many_colors();          break;
+    case 22: prg_every_other_led();                   break;
+    case 23: prg_every_other_led_fade();              break;
+    case 24: prg_fill_from_center();                  break;
+    case 25: prg_fill_from_sides();                   break;
+    case 26: prg_fill_from_sides_and_back();          break;
+    case 27: prg_fill_from_sides_and_fade();          break;
+    case 28: prg_bouncing_rainbow();                  break;
+    case 29: prg_every_other_led_rotating();          break;
+    case 30: prg_firework();                          break;
+    case 31: prg_fade_to_white_single_color_change(); break;
+    case 32: prg_fade_to_white_many_colors();         break;
+    case 33: prg_fade_to_white_single_color();        break;
+    case 34: prg_many_comets_single_color();          break;
+    case 35: prg_many_comets_many_colors();           break;
+    case 39: prg_many_comets_single_color_one_dir();  break;
+    case 36: prg_bounce();                            break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);
