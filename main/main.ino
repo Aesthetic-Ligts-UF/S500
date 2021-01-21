@@ -301,6 +301,7 @@ void loop() {
     case 35: prg_many_comets_many_colors();           break;
     case 39: prg_many_comets_single_color_one_dir();  break;
     case 36: prg_bounce();                            break;
+    case 40: comet_shifting_color();                  break;
     default:
       Serial.print("PROGRAM ID");
       Serial.print(program, DEC);

@@ -1019,6 +1019,25 @@ void prg_bounce() {
   }
 }
 
+void comet_shifting_color() {
+  int trail_length = 12;
+  int i = 0;
+  int c = 0;
+
+  clear();
+
+  while(sleep(sped)) {    
+    led[i] = CHSV(c+color, 255, brightness);
+
+    if(i >= NUM_LIGHTS+trail_length) {
+      i = 0;
+      c += 20;
+    }
+
+    show();
+  }
+}
+
 void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
   show();
