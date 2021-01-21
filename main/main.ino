@@ -28,6 +28,55 @@
 #include "prgs.hpp"
 #include "helper.hpp"
 
+
+int kuk[] = {
+0,    
+600,
+1900,
+2400,
+2800,
+3500,
+4200,
+4600,
+4800,
+5700,
+6200,
+7100,
+9100,
+9500,
+9900,
+10600,
+11300,
+11700,
+12000,
+12900,
+13400,
+13800,
+14200,
+14900,
+15200,
+16000,
+16300,
+16700,
+17100,
+17800,
+18500,
+18900,
+19200,
+20100,
+20500,
+21400,
+21900,
+22300,
+22800,
+23200,
+23400,
+};
+
+static int kuk_index = 0;
+static unsigned long timer = millis();
+static bool pause = false;
+
 void clear() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
     leds[i] = CRGB(0, 0, 0);
@@ -36,7 +85,7 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = NUM_PROGS-1;
+  program = 0;//NUM_PROGS-1;
   sped = 1;
   brightness = 128;
   color = 100;
@@ -130,8 +179,9 @@ void poll_inputs() {
     
     switch(ircode) {
       case IRCode::Ok:
-        if(program == -1) program = last_program;
-        else              program = -1;
+        //if(program == -1) program = last_program;
+        //else              program = -1;
+        pause = !pause;
         break;
       case IRCode::Left:
         //color = (color + 20) % 256;
@@ -142,10 +192,13 @@ void poll_inputs() {
         sped = (num < 1) * 1 + num;
         break;
       case IRCode::Upp:
-        clear();
+        kuk_index = 0;
+        program = 0;
+        timer = millis();
+        //clear();
         //program = (program + 1) % NUM_PROGS;
-        program = num % NUM_PROGS;
-        last_program = program;
+        //program = num % NUM_PROGS;
+        //last_program = program;
         break;
       case IRCode::Down:
         //brightness = (brightness + 32) % 256;
@@ -220,12 +273,31 @@ void draw_rocket(int pos, char length, char dir, bool blow) {
   }
 }
 
-
-//TODO return a bool if the current program should be changed
 bool sleep(long int ms) {
   int current_program = program;
 
   static unsigned long start_time = millis();
+
+
+  while(pause) {
+    poll_inputs();
+    timer = millis();
+  }
+  
+  if(millis()-timer > kuk[kuk_index]) {
+    Serial.println(millis() - timer);
+    kuk_index++;
+    program++;
+  }
+
+  if(program >= NUM_PROGS) {
+    program = 0;
+  }
+
+  if(kuk_index >= 41) {
+    kuk_index = 0;
+    timer = millis();
+  }
   
   do {
     poll_inputs();
@@ -259,6 +331,7 @@ void setup() {
 }
 
 void loop() {
+
   switch (program) {
     case-1: prg_off();                                break;
     case 0: prg_single_color();                       break;
