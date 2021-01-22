@@ -87,7 +87,7 @@ void reset() {
   last_program = 0;
   program = 0;//NUM_PROGS-1;
   sped = 1;
-  brightness = 128;
+  brightness = 255;
   color = 100;
 
   clear();
@@ -95,7 +95,7 @@ void reset() {
 
 void poll_inputs() {
   static char num_str[4] = "0\0\0";
-  static char num_index = 0;
+  static char num_index = 0;     
   static int num = 0;
   static long int num_last_time = 0;
 
