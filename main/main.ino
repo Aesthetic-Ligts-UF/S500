@@ -75,7 +75,7 @@ int kuk[] = {
 
 static int kuk_index = 0;
 static unsigned long timer = millis();
-static bool pause = false;
+static bool pause = true;
 
 void clear() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
