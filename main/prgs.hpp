@@ -1068,6 +1068,70 @@ void prg_chasing_rainbow() {
   }
 }
 
+//TODO make it fade in as well
+
+void prg_flare_ups_single_color() {
+  unsigned char indexes[8];
+  unsigned char times[8];
+
+  for(int i = 0; i < 8; i++) indexes[i] = random(NUM_LIGHTS);
+  for(int i = 0; i < 8; i++) times[i] = random(256);
+  
+  while (sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 8; i++) {
+      for(int j = -4; j < 5; j++) {
+        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)]);
+        led.v = min((led.v + ((4 - abs(j)) * times[i]) / 4), 255);
+        leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)] = CHSV(color, 255, led.v);
+      }
+    }
+
+    for(int i = 0; i < 8; i++) {
+      if(times[i]-- == 0) {
+        times[i] = 255;
+        indexes[i] = random(NUM_LIGHTS);
+      }
+    }
+
+    show();
+  }
+}
+
+//TODO make it fade in as well
+
+void prg_flare_ups_many_colors() {
+  unsigned char indexes[8];
+  unsigned char times[8];
+  unsigned char colors[8];
+
+  for(int i = 0; i < 8; i++) indexes[i] = random(NUM_LIGHTS);
+  for(int i = 0; i < 8; i++) times[i] = random(256);
+  for(int i = 0; i < 8; i++) colors[i] = random(64);
+  
+  while (sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 8; i++) {
+      for(int j = -4; j < 5; j++) {
+        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)]);
+        led.v = min((led.v + ((4 - abs(j)) * times[i]) / 4), 255);
+        leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)] = CHSV(colors[i]+color, 255, led.v);
+      }
+    }
+
+    for(int i = 0; i < 8; i++) {
+      if(times[i]-- == 0) {
+        times[i] = 255;
+        indexes[i] = random(NUM_LIGHTS);
+      }
+    }
+
+    show();
+  }
+}
+
 void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
   show();

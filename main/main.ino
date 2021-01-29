@@ -304,14 +304,12 @@ void loop() {
     case 40: prg_comet_shifting_color();              break;
     case 41: prg_chasing_single_color();              break;
     case 42: prg_chasing_rainbow();                   break;
-    //case 43: prg_flare_ups_single_color();            break;
-    /*case 44: prg_flare_ups_many_colors();             break;
-    case 45: prg_flare_ups_single_color();            break;
-    case 46: prg_fill_side_to_side_shifting_color();  break;
-    case 47: prg_fill_side_to_side_shifting_color();  break;*/
+    case 43: prg_flare_ups_single_color();            break;
+    case 44: prg_flare_ups_many_colors();             break;
+
     
     default:
-      Serial.print("PROGRAM ID");
+      Serial.print("PROGRAM ID ");
       Serial.print(program, DEC);
       Serial.println(" IS INVALID!!!");
       sleep(2000);
