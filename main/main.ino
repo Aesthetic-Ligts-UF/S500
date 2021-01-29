@@ -220,22 +220,35 @@ void draw_rocket(int pos, char length, char dir, bool blow) {
   }
 }
 
+void changing_programs() {
+
+}
 
 //TODO return a bool if the current program should be changed
 bool sleep(long int ms) {
   int current_program = program;
 
   static unsigned long start_time = millis();
-  
+  static bool rotating = false;
+
   do {
     poll_inputs();
   } while(millis() < start_time + ms);
 
   start_time = millis();
 
-  /*program = ((millis() / 1000) / 4) % 14;
-  if(current_program != program) 
-    color = random(256);*/
+  if(current_program != program) {
+    Serial.println("hmm");
+    rotating = false;
+  }
+
+  if(program == 45) {
+    rotating = true;
+  }
+
+  if(rotating) {
+    program = ((millis() / 1000) / 4) % (NUM_PROGS - 1);
+  }
 
   return current_program == program;
 }
