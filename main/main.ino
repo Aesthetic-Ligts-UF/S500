@@ -224,7 +224,7 @@ void changing_programs() {
 
 }
 
-//TODO return a bool if the current program should be changed
+//TODO make it not give try to use changing pgs as a prg of it self
 bool sleep(long int ms) {
   int current_program = program;
 
