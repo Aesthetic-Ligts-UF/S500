@@ -1019,21 +1019,51 @@ void prg_bounce() {
   }
 }
 
-void comet_shifting_color() {
-  int trail_length = 12;
+void prg_comet_shifting_color() {
   int i = 0;
   int c = 0;
 
   clear();
 
   while(sleep(sped)) {    
-    led[i] = CHSV(c+color, 255, brightness);
+    leds[i++] = CHSV(c+color, 255, brightness);
 
-    if(i >= NUM_LIGHTS+trail_length) {
+    if(i >= NUM_LIGHTS) {
       i = 0;
       c += 20;
     }
 
+    show();
+  }
+}
+
+void prg_chasing_single_color() {
+  int j = 0;
+
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[(i+j)%NUM_LIGHTS] = CHSV(color, 255, ((i % 12) * 255) / 12);
+    }
+
+    j += 1;
+    show();
+  }
+}
+
+
+void prg_chasing_rainbow() {
+  int j = 0;
+
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[(i+j)%NUM_LIGHTS] = CHSV(color+i, 255, ((i % 12) * 255) / 12);
+    }
+
+    j += 1;
     show();
   }
 }
