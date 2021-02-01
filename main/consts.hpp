@@ -37,4 +37,33 @@ constexpr int NUM_LIGHTS = 150;
 constexpr long din_mamma_1 = 0x7100AB;
 constexpr long din_mamma_2 = 0xFF35AB;
 
+constexpr int NUM_SPEED_LVLS = 12;
+
+const int SPEED_LVLS[10] = {
+    1, 2, 4, 8, 16, 32, 64, 128, 256, 512
+};
+
+constexpr int NUM_BRIGHTNESS_LVLS = 12;
+
+const int BRIGHTNESS_LVLS[10] = {
+    0, 25, 50, 75, 100, 125, 150, 175, 200, 255
+};
+
+constexpr int NUM_COLOR_LVLS = 12;
+
+const int COLOR_LVLS[NUM_COLOR_LVLS] = {
+    (0   / 360.0) * 255,//RED
+    (30  / 360.0) * 255,//ORANGE
+    (60  / 360.0) * 255,//YELLOW
+    (90  / 360.0) * 255,//LIGHT_GREEN
+    (120 / 360.0) * 255,//GREEN
+    (150 / 360.0) * 255,//TEAL
+    (180 / 360.0) * 255,//LIGHT_BLUE
+    (210 / 360.0) * 255,//BLUE
+    (240 / 360.0) * 255,//DARK_BLUE
+    (270 / 360.0) * 255,//PURPLE
+    (300 / 360.0) * 255,//MAGENTA
+    (330 / 360.0) * 255,//PINK
+};
+
 #endif

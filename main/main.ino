@@ -36,10 +36,10 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = NUM_PROGS-1;
+  program = 0;//NUM_PROGS-1;
   sped = 1;
   brightness = 128;
-  color = 100;
+  color = COLOR_LVLS[0];
 
   clear();
 }
@@ -49,6 +49,10 @@ void poll_inputs() {
   static char num_index = 0;
   static int num = 0;
   static long int num_last_time = 0;
+  static long int num_reset_time = 0;
+  static char last_char = 0;
+
+  //color = COLOR_LVLS[(millis()/2000)%12];
 
   if(millis() > num_last_time + 2000 && num_index != 0) {
     num_index = 3;
@@ -56,15 +60,35 @@ void poll_inputs() {
 
   if(num_index == 3) {
     num = atoi(num_str);
+    
+    if(num_str[2] != '\0') {
+      last_char = num_str[2] - '0';
+    } else if(num_str[1] != '\0') {
+      last_char = num_str[1] - '0';
+    } else {
+      last_char = num_str[0] - '0';
+    }
+
+    Serial.print("User inputed: ");
     Serial.println(num_str);
+    Serial.print("Last digit: ");
+    Serial.println(int(last_char));
+
     num_str[0] = '0';
     num_str[1] = '\0';
     num_str[2] = '\0';
     num_index = 0;
+    num_reset_time = millis();
   }
+
+  if(millis() > num_reset_time + 15000) {
+    //num = 0;
+  }
+
 
   if(irrecv.decode(&results)) {
     // Print Code in HEX
+    Serial.print("Infra red signal: ");
     Serial.println(results.value, HEX);
     irrecv.resume();
 
@@ -121,11 +145,25 @@ void poll_inputs() {
 
     if(num_index == 3) {
       num = atoi(num_str);
+      
+      if(num_str[2] != '\0') {
+        last_char = num_str[2] - '0';
+      } else if(num_str[1] != '\0') {
+        last_char = num_str[1] - '0';
+      } else {
+        last_char = num_str[0] - '0';
+      }
+
+      Serial.print("User inputed: ");
       Serial.println(num_str);
+      Serial.print("Last digit: ");
+      Serial.println(int(last_char));
+
       num_str[0] = '0';
       num_str[1] = '\0';
       num_str[2] = '\0';
       num_index = 0;
+      num_reset_time = millis();
     }
     
     switch(ircode) {
@@ -135,11 +173,13 @@ void poll_inputs() {
         break;
       case IRCode::Left:
         //color = (color + 20) % 256;
-        color = num % 256;
+        color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
       case IRCode::Right:
         //sped = (sped % 40) + 5;
-        sped = (num < 1) * 1 + num;
+        //sped = (num < 1) * 1 + num;
+        //sped = SPEED_LVLS[num % NUM_SPEED_LVLS];
+        sped = SPEED_LVLS[last_char];
         break;
       case IRCode::Upp:
         clear();
@@ -149,7 +189,8 @@ void poll_inputs() {
         break;
       case IRCode::Down:
         //brightness = (brightness + 32) % 256;
-        brightness = num % 256;
+        //brightness = num % 256;
+        brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
         break;
       case IRCode::Hashtag:
         reset();
@@ -220,10 +261,6 @@ void draw_rocket(int pos, char length, char dir, bool blow) {
   }
 }
 
-void changing_programs() {
-
-}
-
 //TODO make it not give try to use changing pgs as a prg of it self
 bool sleep(long int ms) {
   int current_program = program;
@@ -238,7 +275,6 @@ bool sleep(long int ms) {
   start_time = millis();
 
   if(current_program != program) {
-    Serial.println("hmm");
     rotating = false;
   }
 
@@ -269,6 +305,10 @@ void setup() {
   FastLED.setBrightness( 255 );
 
   reset();
+
+  /*for(int i : COLOR_LVLS) {
+    Serial.println(i);
+  }*/
 }
 
 void loop() {
@@ -319,8 +359,6 @@ void loop() {
     case 42: prg_chasing_rainbow();                   break;
     case 43: prg_flare_ups_single_color();            break;
     case 44: prg_flare_ups_many_colors();             break;
-
-    
     default:
       Serial.print("PROGRAM ID ");
       Serial.print(program, DEC);

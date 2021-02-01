@@ -32,7 +32,7 @@
 #include <lib8tion.h>
 
 void prg_epelepsi_single_color() {
-  unsigned char offset[100];
+  unsigned char offset[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++) {
     offset[i] = random(100);
@@ -51,7 +51,7 @@ void prg_epelepsi_single_color() {
       int b = (sin8(i+l+offset[i]) - 127) >> 1;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
-      leds[i] = CHSV(color, 255, b);
+      leds[i] = CHSV(color, 255, b+brightness);
     }
 
     show();
@@ -59,7 +59,7 @@ void prg_epelepsi_single_color() {
 }
 
 void prg_epelepsi_many_colors() {
-  unsigned char offset[100];
+  unsigned char offset[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++) {
     offset[i] = random(100);
@@ -87,7 +87,7 @@ void prg_epelepsi_many_colors() {
 
 
 void prg_epelepsi_all_colors() {
-  unsigned char offset[100];
+  unsigned char offset[NUM_LIGHTS];
 
   for(int i = 0; i < NUM_LIGHTS; i++) {
     offset[i] = random(256);
