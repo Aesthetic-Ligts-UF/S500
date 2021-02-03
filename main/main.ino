@@ -57,15 +57,15 @@ void poll_inputs() {
   //Serial.println(analogRead(A0));
   sound_lvls[sound_index++] = analogRead(A0) - STANDARD_SOUND_LVL;
 
-  if(sound_index >= 12) {
+  if(sound_index >= 64) {
     sound_index = 0;
   }
 
   if(sound_index == 0) {
     long int sum = 0;
-    for(int i = 0; i < 12; i++) {
-      sum += sound_lvls[i];
-      avrage_sound = sum / 12;
+    for(int i = 0; i < 64; i++) {
+      sum += max(sound_lvls[i], 0);
+      avrage_sound = sum / 64;
       Serial.println(avrage_sound);
     }
   }
