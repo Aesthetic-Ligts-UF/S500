@@ -37,6 +37,7 @@ static CRGB leds[NUM_LIGHTS];
 
 static int sound_lvls[256];
 static unsigned char sound_index;
+static unsigned char avrage_sound;
 
 static int last_program;
 static int program;

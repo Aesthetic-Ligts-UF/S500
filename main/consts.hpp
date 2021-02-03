@@ -66,6 +66,6 @@ const int COLOR_LVLS[NUM_COLOR_LVLS] = {
     (330 / 360.0) * 255,//PINK
 };
 
-constexpr int STANDARD_SOUND_LVL = 450;
+constexpr int STANDARD_SOUND_LVL = 448;
 
 #endif

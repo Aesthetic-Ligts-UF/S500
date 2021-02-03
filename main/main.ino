@@ -40,6 +40,8 @@ void reset() {
   sped = 1;
   brightness = 128;
   color = COLOR_LVLS[0];
+  sound_index = 0;
+  avrage_sound = 0;
 
   clear();
 }
@@ -52,7 +54,21 @@ void poll_inputs() {
   static long int num_reset_time = 0;
   static char last_char = 0;
 
-  Serial.println(analogRead(A0));
+  //Serial.println(analogRead(A0));
+  sound_lvls[sound_index++] = analogRead(A0) - STANDARD_SOUND_LVL;
+
+  if(sound_index >= 12) {
+    sound_index = 0;
+  }
+
+  if(sound_index == 0) {
+    long int sum = 0;
+    for(int i = 0; i < 12; i++) {
+      sum += sound_lvls[i];
+      avrage_sound = sum / 12;
+      Serial.println(avrage_sound);
+    }
+  }
 
   //color = COLOR_LVLS[(millis()/2000)%12];
 

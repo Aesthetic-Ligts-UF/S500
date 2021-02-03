@@ -1150,8 +1150,8 @@ void prg_sound_single_color() {
 
 void prg_sound_many_colors() {
   while(sleep(sped)) {
-    float val = (analogRead(A0)-STANDARD_SOUND_LVL) / 6.0;
-    Serial.println(val);
+    float val = avrage_sound / 8;//(analogRead(A0)-STANDARD_SOUND_LVL) / 6.0;
+    //Serial.println(val);
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color*val+(1.0-val)*i, 255, 255);
     } 
