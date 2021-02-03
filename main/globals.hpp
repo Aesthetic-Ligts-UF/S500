@@ -35,6 +35,9 @@ static decode_results results;
 
 static CRGB leds[NUM_LIGHTS];
 
+static int sound_lvls[256];
+static unsigned char sound_index;
+
 static int last_program;
 static int program;
 static int sped;

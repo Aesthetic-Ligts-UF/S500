@@ -36,7 +36,7 @@ void clear() {
 
 void reset() {
   last_program = 0;
-  program = 0;//NUM_PROGS-1;
+  program = NUM_PROGS-2;
   sped = 1;
   brightness = 128;
   color = COLOR_LVLS[0];
@@ -51,6 +51,8 @@ void poll_inputs() {
   static long int num_last_time = 0;
   static long int num_reset_time = 0;
   static char last_char = 0;
+
+  Serial.println(analogRead(A0));
 
   //color = COLOR_LVLS[(millis()/2000)%12];
 
@@ -278,7 +280,7 @@ bool sleep(long int ms) {
     rotating = false;
   }
 
-  if(program == 45) {
+  if(program == NUM_PROGS-1) {
     rotating = true;
   }
 
@@ -359,6 +361,8 @@ void loop() {
     case 42: prg_chasing_rainbow();                   break;
     case 43: prg_flare_ups_single_color();            break;
     case 44: prg_flare_ups_many_colors();             break;
+    case 45: prg_sound_single_color();                break;
+    case 46: prg_sound_many_colors();                 break;
     default:
       Serial.print("PROGRAM ID ");
       Serial.print(program, DEC);

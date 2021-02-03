@@ -1138,4 +1138,25 @@ void prg_off() {
   while(sleep(1000));   
 }
 
+void prg_sound_single_color() {
+  while(sleep(sped)) {
+    int val = (analogRead(A0)-STANDARD_SOUND_LVL)*5;
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV(val, 255, 255);
+    } 
+    show();
+  }
+}
+
+void prg_sound_many_colors() {
+  while(sleep(sped)) {
+    float val = (analogRead(A0)-STANDARD_SOUND_LVL) / 6.0;
+    Serial.println(val);
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV(color*val+(1.0-val)*i, 255, 255);
+    } 
+    show();
+  }
+}
+
 #endif

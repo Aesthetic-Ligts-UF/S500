@@ -27,7 +27,7 @@
 // Define sensor pin
 constexpr int RECV_PIN = 4;
 
-constexpr int NUM_PROGS = 46;
+constexpr int NUM_PROGS = 48;
 constexpr int NUM_LIGHTS = 150;
 
 #define LED_TYPE    WS2811
@@ -65,5 +65,7 @@ const int COLOR_LVLS[NUM_COLOR_LVLS] = {
     (300 / 360.0) * 255,//MAGENTA
     (330 / 360.0) * 255,//PINK
 };
+
+constexpr int STANDARD_SOUND_LVL = 450;
 
 #endif
