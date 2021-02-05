@@ -46,6 +46,26 @@ void reset() {
   clear();
 }
 
+void poll_sound() {
+  //Serial.println(analogRead(A0));
+  sound_lvls[sound_index++] = max(analogRead(A0) - STANDARD_SOUND_LVL, 0);
+
+  if(sound_index >= 8) {
+    sound_index = 0;
+  }
+
+  if(sound_index == 0) {
+    long int sum = 0;
+    for(int i = 0; i < 8; i++) {
+      sum += sound_lvls[i];
+    }
+    avrage_sound = sum / 8;
+    //Serial.println(avrage_sound);
+  }
+
+  Serial.println(analogRead(A0));
+}
+
 void poll_inputs() {
   static char num_str[4] = "0\0\0";
   static char num_index = 0;
@@ -53,23 +73,6 @@ void poll_inputs() {
   static long int num_last_time = 0;
   static long int num_reset_time = 0;
   static char last_char = 0;
-
-  //Serial.println(analogRead(A0));
-  sound_lvls[sound_index++] = analogRead(A0) - STANDARD_SOUND_LVL;
-
-  if(sound_index >= 64) {
-    sound_index = 0;
-  }
-
-  if(sound_index == 0) {
-    long int sum = 0;
-    for(int i = 0; i < 64; i++) {
-      sum += max(sound_lvls[i], 0);
-      avrage_sound = sum / 64;
-      Serial.println(avrage_sound);
-    }
-  }
-
   //color = COLOR_LVLS[(millis()/2000)%12];
 
   if(millis() > num_last_time + 2000 && num_index != 0) {
@@ -287,6 +290,7 @@ bool sleep(long int ms) {
   static bool rotating = false;
 
   do {
+    poll_sound();
     poll_inputs();
   } while(millis() < start_time + ms);
 
@@ -379,6 +383,8 @@ void loop() {
     case 44: prg_flare_ups_many_colors();             break;
     case 45: prg_sound_single_color();                break;
     case 46: prg_sound_many_colors();                 break;
+    case 47: prg_sound_single_color_fade();           break;
+    case 48: prg_sound_rotating();                    break;
     default:
       Serial.print("PROGRAM ID ");
       Serial.print(program, DEC);

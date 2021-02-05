@@ -1140,7 +1140,7 @@ void prg_off() {
 
 void prg_sound_single_color() {
   while(sleep(sped)) {
-    int val = (analogRead(A0)-STANDARD_SOUND_LVL)*5;
+    int val = avrage_sound*5;
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(val, 255, 255);
     } 
@@ -1150,12 +1150,33 @@ void prg_sound_single_color() {
 
 void prg_sound_many_colors() {
   while(sleep(sped)) {
-    float val = avrage_sound / 8;//(analogRead(A0)-STANDARD_SOUND_LVL) / 6.0;
+    float val = avrage_sound / 8.0f;
     //Serial.println(val);
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color*val+(1.0-val)*i, 255, 255);
     } 
     show();
+  }
+}
+
+void prg_sound_single_color_fade() {
+  while(sleep(sped)) {
+    int val = avrage_sound*5;
+    //Serial.println(val);
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i] = CHSV(color, val, brightness);
+    } 
+    show();
+  }
+}
+
+void prg_sound_rotating() {
+  while(sleep(sped)) {
+    int val = avrage_sound;
+    Serial.println(val);
+    leds[0] = CHSV(COLOR_LVLS[val%NUM_COLOR_LVLS], 255, brightness); 
+    show();
+    rotate(1);
   }
 }
 

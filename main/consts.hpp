@@ -27,7 +27,7 @@
 // Define sensor pin
 constexpr int RECV_PIN = 4;
 
-constexpr int NUM_PROGS = 48;
+constexpr int NUM_PROGS = 50;
 constexpr int NUM_LIGHTS = 150;
 
 #define LED_TYPE    WS2811
