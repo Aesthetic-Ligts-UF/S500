@@ -88,9 +88,15 @@ void reset() {
   program = 0;//NUM_PROGS-1;
   sped = 1;
   brightness = 255;
-  color = 100;
+  color = 215;
 
-  clear();
+  kuk_index = 0;
+  program = 0;
+  timer = millis();
+
+  //clear();
+  for(int i = 0; i < NUM_LIGHTS; i++) leds[i] = CRGB(255, 255, 255);
+  show();
 }
 
 void poll_inputs() {
@@ -192,13 +198,9 @@ void poll_inputs() {
         sped = (num < 1) * 1 + num;
         break;
       case IRCode::Upp:
-        kuk_index = 0;
-        program = 0;
-        timer = millis();
-        //clear();
-        //program = (program + 1) % NUM_PROGS;
-        //program = num % NUM_PROGS;
-        //last_program = program;
+        program = (program + 1) % NUM_PROGS;
+        program = num % NUM_PROGS;
+        last_program = program;
         break;
       case IRCode::Down:
         //brightness = (brightness + 32) % 256;
@@ -322,7 +324,7 @@ void setup() {
   Serial.begin(9600);
   irrecv.enableIRIn();
 
-  sleep( 1500 ); // power-up safety sleep
+  delay( 1500 ); // power-up safety sleep
 
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LIGHTS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( 255 );
