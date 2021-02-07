@@ -296,16 +296,18 @@ bool sleep(long int ms) {
 
   start_time = millis();
 
-  if(current_program != program) {
-    rotating = false;
-  }
+  if(program != -1) {
+    if(current_program != program) {
+      rotating = false;
+    }
 
-  if(program == NUM_PROGS-1) {
-    rotating = true;
-  }
+    if(program == NUM_PROGS-1) {
+      rotating = true;
+    }
 
-  if(rotating) {
-    program = ((millis() / 1000) / 4) % (NUM_PROGS - 1);
+    if(rotating) {
+      program = ((millis() / 1000) / 4) % (NUM_PROGS - 1);
+    }
   }
 
   return current_program == program;
