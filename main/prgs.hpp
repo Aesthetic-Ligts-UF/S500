@@ -982,6 +982,8 @@ void prg_firework() {
   }
 }
 
+//TODO make bounces be more realistic by making them lose length completley and then expand again
+
 void prg_bounce() {
   srand(millis());
 
