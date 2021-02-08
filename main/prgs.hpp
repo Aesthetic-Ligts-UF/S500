@@ -1087,9 +1087,9 @@ void prg_flare_ups_single_color() {
 
     for(int i = 0; i < 8; i++) {
       for(int j = -4; j < 5; j++) {
-        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)]);
+        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS-1), 0)]);
         led.v = min((led.v + ((4 - abs(j)) * times[i]) / 4), 255);
-        leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)] = CHSV(color, 255, led.v);
+        leds[max(min(indexes[i]+j, NUM_LIGHTS-1), 0)] = CHSV(color, 255, led.v);
       }
     }
 
@@ -1120,9 +1120,9 @@ void prg_flare_ups_many_colors() {
 
     for(int i = 0; i < 8; i++) {
       for(int j = -4; j < 5; j++) {
-        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)]);
+        CHSV led = rgb2hsv_approximate(leds[max(min(indexes[i]+j, NUM_LIGHTS-1), 0)]);
         led.v = min((led.v + ((4 - abs(j)) * times[i]) / 4), 255);
-        leds[max(min(indexes[i]+j, NUM_LIGHTS), 0)] = CHSV(colors[i]+color, 255, led.v);
+        leds[max(min(indexes[i]+j, NUM_LIGHTS-1), 0)] = CHSV(colors[i]+color, 255, led.v);
       }
     }
 
