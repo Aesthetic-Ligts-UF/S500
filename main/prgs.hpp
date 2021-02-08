@@ -808,6 +808,7 @@ void prg_every_other_led_rotating() {
   }
 }
 
+//TODO make sure the middle LEDs actually light up
 void prg_fill_from_center() {
   int size = 1;
 
@@ -851,7 +852,7 @@ void prg_fill_from_sides() {
 
     size += 1;
 
-    if(size >= NUM_LIGHTS/2) {
+    if(size > NUM_LIGHTS/2) {
       size = 0;
     }
 
@@ -937,6 +938,8 @@ void prg_bouncing_rainbow() {
     show();
   }
 }
+
+//TODO make fireworks come from both sides
 
 class FireWork {
 public:

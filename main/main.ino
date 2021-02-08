@@ -35,7 +35,7 @@ void clear() {
 }
 
 void reset() {
-  program = NUM_PROGS-2;
+  program = 45;
   last_program = program;
   sped = 1;
   brightness = 128;
