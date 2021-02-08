@@ -22,6 +22,7 @@
  */
 
 #include <FastLED.h>
+#define DEBUG
 #include <IRremote.h>
 #include "globals.hpp"
 #include "consts.hpp"
@@ -35,7 +36,7 @@ void clear() {
 }
 
 void reset() {
-  program = 45;
+  program = 0;
   last_program = program;
   sped = 1;
   brightness = 128;
@@ -63,7 +64,7 @@ void poll_sound() {
     //Serial.println(avrage_sound);
   }
 
-  Serial.println(analogRead(A0));
+  //Serial.println(analogRead(A0));
 }
 
 void poll_inputs() {
@@ -111,6 +112,14 @@ void poll_inputs() {
     // Print Code in HEX
     Serial.print("Infra red signal: ");
     Serial.println(results.value, HEX);
+    
+    if (results.overflow) {
+      irparams = irparams_struct{};
+      irrecv = IRrecv(RECV_PIN);
+      results = decode_results{};
+      Serial.println("ERROR Overflow detected!!!");
+    }
+
     irrecv.resume();
 
     IRCode ircode = (IRCode)results.value;
@@ -322,6 +331,8 @@ void show() {
 void setup() {
   Serial.begin(9600);
   irrecv.enableIRIn();
+
+  Serial.println("Start up!");
 
   sleep( 1500 ); // power-up safety sleep
 
