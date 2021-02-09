@@ -376,6 +376,8 @@ void loop() {
     case 24: prg_every_other_led();                   break;
     case 25: prg_every_other_led_fade();              break;
     case 26: prg_fill_from_center();                  break;
+    //TODO add fill from sides many colors
+    //TODO add flare sides flare center flare all
     case 27: prg_fill_from_sides();                   break;
     case 28: prg_fill_from_sides_and_back();          break;
     case 29: prg_fill_from_sides_and_fade();          break;
