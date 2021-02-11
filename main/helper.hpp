@@ -24,7 +24,7 @@
 #ifndef HELPER_H_INCLUDED
 #define HELPER_H_INCLUDED
 
-enum class IRCode : long int {
+enum class IRCode : long long {
   One     = 0xFFA25D,
   Two     = 0xFF629D,
   Three   = 0xFFE21D,
@@ -42,7 +42,7 @@ enum class IRCode : long int {
   Right   = 0xFF5AA5,
   Left    = 0xFF10EF,
   Ok      = 0xFF38C7,
-  Repeat  = 0xFFFFFF
+  Repeat  = 0xFFFFFFFF
 };
 
 void reset();

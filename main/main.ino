@@ -43,7 +43,7 @@ void reset() {
   color = COLOR_LVLS[0];
   sound_index = 0;
   avrage_sound = 0;
-
+  garbage_ir_signal = false;
   clear();
 }
 
@@ -66,6 +66,12 @@ void poll_sound() {
 
   //Serial.println(analogRead(A0));
 }
+
+/*TODO 
+OK step thru prgs
+ASTERIX POWER BUTTON
+HASHTAG RESET BUTTON
+*/
 
 void poll_inputs() {
   static char num_str[4] = "0\0\0";
@@ -102,11 +108,6 @@ void poll_inputs() {
     num_index = 0;
     num_reset_time = millis();
   }
-
-  if(millis() > num_reset_time + 15000) {
-    //num = 0;
-  }
-
 
   if(irrecv.decode(&results)) {
     // Print Code in HEX
@@ -237,6 +238,17 @@ void poll_inputs() {
       default:
         break;
     }
+    switch(ircode) {
+      case IRCode::One: case IRCode::Two: case IRCode::Three: case IRCode::Four: case IRCode::Five:
+      case IRCode::Six: case IRCode::Seven: case IRCode::Eight: case IRCode::Nine: case IRCode::Zero:
+      case IRCode::Asterix: case IRCode::Hashtag: case IRCode::Ok: case IRCode::Repeat:
+      case IRCode::Upp: case IRCode::Down: case IRCode::Right: case IRCode::Left: 
+        garbage_ir_signal = false;
+        break;
+      default:
+        garbage_ir_signal = true;
+        break;
+    }
   }
 }
 
@@ -299,9 +311,11 @@ bool sleep(long int ms) {
   static bool rotating = false;
 
   do {
-    poll_sound();
+    if(program >= 45 && program <= 48) {
+      poll_sound();
+    }
     poll_inputs();
-  } while(millis() < start_time + ms);
+  } while(millis() < start_time + ms || garbage_ir_signal);
 
   start_time = millis();
 
@@ -351,49 +365,49 @@ void loop() {
     case-1: prg_off();                                break;
     case 0: prg_single_color();                       break;
     case 1: prg_many_colors();                        break;
-    case 2: prg_comet_single_color();                 break;
-    case 3: prg_comet_many_colors();                  break;
-    case 4: prg_sin_single_color();                   break;
-    case 5: prg_sin_many_colors();                    break;
-    case 6: prg_epelepsi_single_color();              break;
-    case 7: prg_epelepsi_many_colors();               break;
-    case 8: prg_epelepsi_all_colors();                break;
-    case 9: prg_fade_in_out_single_color();           break;
-    case 10: prg_fade_in_out_many_colors();           break;
-    case 11: prg_random();                            break;
-    case 12: prg_christmas();                         break;
-    case 13: prg_rainbow();                           break;
-    case 14: prg_rainbow_every_other();               break;
-    case 15: prg_rainbow_every_other_rotating();      break;
-    case 16: prg_ping_pong_single_color();            break;
-    case 17: prg_ping_pong_many_colors();             break;
-    case 18: prg_stars_single_color();                break;
-    case 19: prg_stars_all_color();                   break;
-    case 20: prg_snake();                             break;
-    case 21: prg_grayscale();                         break;
-    case 22: prg_fade_between_single_colors();        break;
-    case 23: prg_fade_between_many_colors();          break;
-    case 24: prg_every_other_led();                   break;
-    case 25: prg_every_other_led_fade();              break;
-    case 26: prg_fill_from_center();                  break;
+    case 2: prg_sin_single_color();                   break;
+    case 3: prg_sin_many_colors();                    break;
+    case 4: prg_comet_single_color();                 break;
+    case 5: prg_comet_many_colors();                  break;
+    case 6: prg_many_comets_single_color();           break;
+    case 7: prg_many_comets_many_colors ();           break;
+    case 8: prg_many_comets_single_color_one_dir ();  break;
+    case 9: prg_shifting_color ();                    break;
+    case 10: prg_bouncing_comets();                   break;
+    case 11: prg_chasing_single_color();              break;
+    case 12: prg_chasing_many_colors();               break;
+    case 13: prg_epelepsi_single_color ();            break;
+    case 14: prg_epelepsi_many_colors ();             break;
+    case 15: prg_epelepsi_all_colors ();              break;
+    case 16: prg_rainbow();                           break;
+    case 17: prg_rainbow_every_other();               break;
+    case 18: prg_rainbow_every_other_rotating();      break;
+    case 19: prg_bouncing_rainbow();                 break;
+    case 20: prg_ping_pong_single_color();            break;
+    case 21: prg_ping_pong_many_colors();             break;
+    case 22: prg_stars_single_color();                break;
+    case 23: prg_stars_all_color();                   break;
+    case 24: prg_snake();                             break;
+    case 25: prg_fade_between_single_colors();        break;
+    case 26: prg_fade_between_many_colors();          break;
+    case 27: prg_every_other_led();                   break;
+    case 28: prg_every_other_led_fade();              break;
+    case 29: prg_fill_from_center();                  break;
     //TODO add fill from sides many colors
     //TODO add flare sides flare center flare all
-    case 27: prg_fill_from_sides();                   break;
-    case 28: prg_fill_from_sides_and_back();          break;
-    case 29: prg_fill_from_sides_and_fade();          break;
-    case 30: prg_bouncing_rainbow();                  break;
-    case 31: prg_every_other_led_rotating();          break;
-    case 32: prg_firework();                          break;
-    case 33: prg_fade_to_white_single_color_change(); break;
-    case 34: prg_fade_to_white_many_colors();         break;
-    case 35: prg_fade_to_white_single_color();        break;
-    case 36: prg_many_comets_single_color();          break;
-    case 37: prg_many_comets_many_colors();           break;
-    case 38: prg_many_comets_single_color_one_dir();  break;
-    case 39: prg_bounce();                            break;
-    case 40: prg_comet_shifting_color();              break;
-    case 41: prg_chasing_single_color();              break;
-    case 42: prg_chasing_rainbow();                   break;
+    case 30: prg_fill_from_sides();                   break;
+    case 31: prg_fill_from_sides_and_back();          break;
+    case 32: prg_fill_from_sides_and_fade();          break;
+    case 33: prg_fade_in_out_single_color();          break;
+    case 34: prg_fade_in_out_many_colors();           break;
+    case 35: prg_every_other_led_rotating();          break;
+    case 36: prg_firework();                          break;
+    case 37: prg_white();                             break;
+    case 38: prg_fade_to_white_single_color();        break;
+    case 39: prg_fade_to_white_many_colors();         break;
+    case 40: prg_fade_to_white_single_color_change(); break;
+    case 41: prg_random();                            break;
+    case 42: prg_christmas();                         break;
     case 43: prg_flare_ups_single_color();            break;
     case 44: prg_flare_ups_many_colors();             break;
     case 45: prg_sound_single_color();                break;

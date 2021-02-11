@@ -750,7 +750,7 @@ void prg_snake() {
 
 }
 
-void prg_grayscale() {
+void prg_white() {
   while(sleep(sped)) {
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(0, 0, brightness);
@@ -827,7 +827,6 @@ void prg_every_other_led_rotating() {
   }
 }
 
-//TODO make sure the middle LEDs actually light up
 void prg_fill_from_center() {
   int size = 1;
 
@@ -1003,7 +1002,7 @@ void prg_firework() {
 
 //TODO make bounces be more realistic by making them lose length completley and then expand again
 
-void prg_bounce() {
+void prg_bouncing_comets() {
   srand(millis());
 
   int c = color;
@@ -1043,7 +1042,7 @@ void prg_bounce() {
   }
 }
 
-void prg_comet_shifting_color() {
+void prg_shifting_color() {
   int i = 0;
   int c = 0;
 
@@ -1077,7 +1076,7 @@ void prg_chasing_single_color() {
 }
 
 
-void prg_chasing_rainbow() {
+void prg_chasing_many_colors() {
   int j = 0;
 
   while(sleep(sped)) {
@@ -1197,7 +1196,7 @@ void prg_sound_single_color_fade() {
 void prg_sound_rotating() {
   while(sleep(sped)) {
     int val = avrage_sound;
-    Serial.println(val);
+    //Serial.println(val);
     leds[0] = CHSV(COLOR_LVLS[val%NUM_COLOR_LVLS], 255, brightness); 
     show();
     rotate(1);
