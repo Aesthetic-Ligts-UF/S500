@@ -86,35 +86,6 @@ void poll_inputs() {
     num_index = 3;
   }
 
-  /*if(num_index == 3) {
-    num = atoi(num_str);
-    
-    if(num_str[2] != '\0') {
-      last_char = num_str[2] - '0';
-    } else if(num_str[1] != '\0') {
-      last_char = num_str[1] - '0';
-    } else {
-      last_char = num_str[0] - '0';
-    }
-
-    Serial.print("User inputed: ");
-    Serial.println(num_str);
-    Serial.print("Last digit: ");
-    Serial.println(int(last_char));
-
-    num_str[0] = '0';
-    num_str[1] = '\0';
-    num_str[2] = '\0';
-    num_index = 0;
-    num_reset_time = millis();
-
-    if(paused) {
-      paused = false;
-      program = num % NUM_PROGS;
-      last_program = program;
-    }
-  }*/
-
   if(irrecv.decode(&results)) {
     // Print Code in HEX
     Serial.print("Infra red signal: ");
@@ -179,35 +150,6 @@ void poll_inputs() {
       default:
         break;
     }
-
-    /*if(num_index == 3) {
-      num = atoi(num_str);
-      
-      if(num_str[2] != '\0') {
-        last_char = num_str[2] - '0';
-      } else if(num_str[1] != '\0') {
-        last_char = num_str[1] - '0';
-      } else {
-        last_char = num_str[0] - '0';
-      }
-
-      Serial.print("User inputed: ");
-      Serial.println(num_str);
-      Serial.print("Last digit: ");
-      Serial.println(int(last_char));
-
-      num_str[0] = '0';
-      num_str[1] = '\0';
-      num_str[2] = '\0';
-      num_index = 0;
-      num_reset_time = millis();
-
-      if(paused) {
-        paused = false;
-        program = num % NUM_PROGS;
-        last_program = program;
-      }
-    }*/
     
     switch(ircode) {
       case IRCode::Ok:
@@ -217,9 +159,6 @@ void poll_inputs() {
         color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
       case IRCode::Right:
-        //sped = (sped % 40) + 5;
-        //sped = (num < 1) * 1 + num;
-        //sped = SPEED_LVLS[num % NUM_SPEED_LVLS];
         sped = SPEED_LVLS[last_char];
         break;
       case IRCode::Upp:
@@ -233,8 +172,6 @@ void poll_inputs() {
         
         break;
       case IRCode::Down:
-        //brightness = (brightness + 32) % 256;
-        //brightness = num % 256;
         brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
         break;
       case IRCode::Hashtag:
@@ -255,17 +192,6 @@ void poll_inputs() {
       default:
         break;
     }
-    /*switch(ircode) {
-      case IRCode::One: case IRCode::Two: case IRCode::Three: case IRCode::Four: case IRCode::Five:
-      case IRCode::Six: case IRCode::Seven: case IRCode::Eight: case IRCode::Nine: case IRCode::Zero:
-      case IRCode::Asterix: case IRCode::Hashtag: case IRCode::Ok: case IRCode::Repeat:
-      case IRCode::Upp: case IRCode::Down: case IRCode::Right: case IRCode::Left: 
-        garbage_ir_signal = false;
-        break;
-      default:
-        garbage_ir_signal = true;
-        break;
-    }*/
   }
 
   if(num_index == 3) {
