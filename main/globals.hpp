@@ -45,6 +45,6 @@ static int sped;
 static int brightness;
 static int color;
 
-static bool garbage_ir_signal;
+static bool paused;
 
 #endif

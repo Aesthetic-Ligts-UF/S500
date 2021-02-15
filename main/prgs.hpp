@@ -609,10 +609,10 @@ void prg_christmas() {
 
 void prg_rainbow() {
   int j = 0;
+  CHSV rainbow[NUM_LIGHTS];
   while(sleep(sped)) {
     j += 1;
-
-    CHSV rainbow[NUM_LIGHTS];
+    
     fill_rainbow(rainbow, NUM_LIGHTS, color+j, 255/NUM_LIGHTS);
     
     for(int i = 0; i < NUM_LIGHTS; i++) {
