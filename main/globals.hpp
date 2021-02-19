@@ -25,6 +25,7 @@
 #define GLOBALS_H_INCLUDED
 
 #include "consts.hpp"
+#include "helper.hpp"
 
 #include <FastLED.h>
 #include <IRremote.h>
@@ -46,5 +47,6 @@ static int brightness;
 static int color;
 
 static bool paused;
+static IRCode last_command;
 
 #endif

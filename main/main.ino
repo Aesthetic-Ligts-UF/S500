@@ -22,7 +22,6 @@
  */
 
 #include <FastLED.h>
-#define DEBUG
 #include <IRremote.h>
 #include "globals.hpp"
 #include "consts.hpp"
@@ -44,6 +43,7 @@ void reset() {
   sound_index = 0;
   avrage_sound = 0;
   paused = false;
+  last_command = IRCode::None;
   clear();
 }
 
@@ -154,14 +154,17 @@ void poll_inputs() {
     switch(ircode) {
       case IRCode::Ok:
         program = (program + 1) % NUM_PROGS;
-      case IRCode::Left:
+      case IRCode::Left: case IRCode::Right: case IRCode::Upp: case IRCode::Down:
         //color = (color + 20) % 256;
-        color = COLOR_LVLS[num % NUM_COLOR_LVLS];
+        last_command = ircode;
+        //color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
-      case IRCode::Right:
+      /*case IRCode::Right:
+        last_command = IRCode::Rights;
         sped = SPEED_LVLS[last_char];
         break;
       case IRCode::Upp:
+        last_command = IRCode::Upp;
         //program = (program + 1) % NUM_PROGS;
         if(paused) {
           num_index = 3;
@@ -173,7 +176,7 @@ void poll_inputs() {
         break;
       case IRCode::Down:
         brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
-        break;
+        break;*/
       case IRCode::Hashtag:
         reset();
         break;
@@ -218,8 +221,21 @@ void poll_inputs() {
 
     if(paused) {
       paused = false;
-      program = num % NUM_PROGS;
-      last_program = program;
+      switch(last_command) {
+        case IRCode::Upp:
+          program = num % NUM_PROGS;
+          last_program = program;
+          break;
+        case IRCode::Down:
+          brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
+          break;
+        case IRCode::Right:
+          sped = SPEED_LVLS[last_char];
+          break;
+        case IRCode::Left:
+          color = COLOR_LVLS[num % NUM_COLOR_LVLS];
+          break;
+      }
     }
   }
 }

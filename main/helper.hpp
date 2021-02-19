@@ -25,6 +25,7 @@
 #define HELPER_H_INCLUDED
 
 enum class IRCode : long long {
+  None    = 0x000000,
   One     = 0xFFA25D,
   Two     = 0xFF629D,
   Three   = 0xFFE21D,
