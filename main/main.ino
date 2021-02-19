@@ -221,6 +221,7 @@ void poll_inputs() {
 
     if(paused) {
       paused = false;
+      last_command = IRCode::None;
       switch(last_command) {
         case IRCode::Upp:
           program = num % NUM_PROGS;
@@ -234,6 +235,8 @@ void poll_inputs() {
           break;
         case IRCode::Left:
           color = COLOR_LVLS[num % NUM_COLOR_LVLS];
+          break;
+        default:
           break;
       }
     }
