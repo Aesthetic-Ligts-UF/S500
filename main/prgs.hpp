@@ -215,7 +215,7 @@ void prg_fade_between_many_colors() {
     b = min(brightness+b, 255);
     b = max(b, 0);
 
-    int c = (sin8(j / 2) - 127) >> 1;
+    int c = (sin8(j / 2) - 127);
     c = max(c, 0);
 
     for(int i = 0; i < NUM_LIGHTS; i++) {
@@ -827,6 +827,31 @@ void prg_every_other_led_rotating() {
   }
 }
 
+void prg_fill_from_center_many_colors() {
+  int size = 1;
+
+  while(sleep(sped)) {
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i].r *= 0.9;
+      leds[i].g *= 0.9;
+      leds[i].b *= 0.9;
+    }
+
+    for(int i = NUM_LIGHTS/2-size; i < NUM_LIGHTS/2+size; i++) {
+      leds[i] = CHSV(color+i, 255, brightness);
+    }
+
+    size += 1;
+
+    if(size >= NUM_LIGHTS/2) {
+      size = 1;
+    }
+
+    show();
+  }
+}
+
 void prg_fill_from_center() {
   int size = 1;
 
@@ -866,6 +891,32 @@ void prg_fill_from_sides() {
     for(int i = 0; i < size; i++) {
       leds[i]               = CHSV(color, 255, brightness);
       leds[NUM_LIGHTS-i-1]  = CHSV(color, 255, brightness);
+    }
+
+    size += 1;
+
+    if(size > NUM_LIGHTS/2) {
+      size = 0;
+    }
+
+    show();
+  }
+}
+
+void prg_fill_from_sides_many_colors() {
+  int size = 1;
+
+  while(sleep(sped)) {
+
+    for(int i = 0; i < NUM_LIGHTS; i++) {
+      leds[i].r *= 0.9;
+      leds[i].g *= 0.9;
+      leds[i].b *= 0.9;
+    }
+
+    for(int i = 0; i < size; i++) {
+      leds[i]               = CHSV(color+i, 255, brightness);
+      leds[NUM_LIGHTS-i-1]  = CHSV(color+i, 255, brightness);
     }
 
     size += 1;

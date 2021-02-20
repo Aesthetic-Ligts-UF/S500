@@ -91,7 +91,7 @@ void poll_inputs() {
     Serial.print("Infra red signal: ");
     Serial.println(results.value, HEX);
     
-    if (results.overflow) {
+    if(results.overflow) {
       irparams = irparams_struct{};
       irrecv = IRrecv(RECV_PIN);
       results = decode_results{};
@@ -374,11 +374,9 @@ void loop() {
     case 13: prg_epelepsi_single_color ();            break;
     case 14: prg_epelepsi_many_colors ();             break;
     case 15: prg_epelepsi_all_colors ();              break;
-
-    //Troligen inte nog med plats på stacken för deras CHSV rainbow[NUM_LIGHTS]!!!
-    /*case 16: prg_rainbow();                           break;
-    case 17: prg_rainbow_every_other();               break;
-    case 18: prg_rainbow_every_other_rotating();      break;*/
+    case 16: prg_fill_from_center_many_colors();      break;
+    case 17: prg_fill_from_sides_many_colors();       break;
+    /*case 18: prg_rainbow_every_other_rotating();      break;*/
     case 19: prg_bouncing_rainbow();                  break;
     case 20: prg_ping_pong_single_color();            break;
     case 21: prg_ping_pong_many_colors();             break;
