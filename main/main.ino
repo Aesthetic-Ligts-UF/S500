@@ -157,6 +157,12 @@ void poll_inputs() {
       case IRCode::Left: case IRCode::Right: case IRCode::Upp: case IRCode::Down:
         //color = (color + 20) % 256;
         last_command = ircode;
+        if(paused) {
+          num_index = 3;
+          break;
+        }
+
+        paused = true;
         //color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
       /*case IRCode::Right:
@@ -221,25 +227,34 @@ void poll_inputs() {
 
     if(paused) {
       paused = false;
-      last_command = IRCode::None;
       switch(last_command) {
         case IRCode::Upp:
           program = num % NUM_PROGS;
           last_program = program;
+          Serial.print("Set program to id: ");
+          Serial.println(program);
           break;
         case IRCode::Down:
           brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
+          Serial.print("Set brightness to lvl: ");
+          Serial.println(brightness);
           break;
         case IRCode::Right:
           sped = SPEED_LVLS[last_char];
+          Serial.print("Set speed to lvl: ");
+          Serial.println(sped);
           break;
         case IRCode::Left:
           color = COLOR_LVLS[num % NUM_COLOR_LVLS];
+          Serial.print("Set color to lvl: ");
+          Serial.println(color);
           break;
         default:
+          Serial.println("Unknown command entered! This should only happen if you just press the numpad and don't select any command!");
           break;
       }
     }
+    last_command = IRCode::None;
   }
 }
 
