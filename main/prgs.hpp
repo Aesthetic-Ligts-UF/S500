@@ -589,9 +589,12 @@ const TProgmemPalette16 CRISTHMAS_PALLETTE_P PROGMEM =
     0xFFD700,
 
     0xBD0000,
+    0x14AC00,
+    0xFFD700,
+
+    0xBD0000,
 };
 
-//TODO delete the empty space
 void prg_christmas() {
   TBlendType current_blending = LINEARBLEND;
   static int color_index = 0;
@@ -1015,22 +1018,37 @@ public:
   int pos;
   char dir;
   int time;
-  int blew = 0;
+  bool blew;
 
   FireWork() {
     pos = random(NUM_LIGHTS);
     dir = random(100) < 50;
     time = random(60);
+    blew = false;
   }
 
   void update() {
-    pos = (pos + (dir*2)-1 + NUM_LIGHTS * 2) % (NUM_LIGHTS * 2);
-    blew += (dir*2)-1;
-    if(pos+time < 100) blew = 0;
+    if(time == 0) {
+      blew = false;
+      pos = (pos + (dir*2)-1 + NUM_LIGHTS * 2) % (NUM_LIGHTS * 2);
+    } else {
+      time -= 1;
+    }
+    if(pos == NUM_LIGHTS / 2) {
+      blew = true;
+      time = 100;
+      dir = !dir;
+      //pos = (!dir)*NUM_LIGHTS;
+      pos = 0;
+    }
   }
 
   void draw() {
-    draw_rocket(pos-blew, 12, dir, pos+time > 100);
+    if(!blew) {
+      draw_rocket(pos, 12, dir, false);
+    } else {
+      draw_rocket(NUM_LIGHTS/2, 100, dir, true);
+    }
   }
 };
 
@@ -1039,13 +1057,52 @@ void prg_firework() {
 
   srand(millis());
   
-  FireWork fireworks[3];
+  FireWork fireworks[1];
 
   while(sleep(sped)) {
     for(CRGB& led : leds) led.nscale8(251);
 
-    for(int i = 0; i < 3; i++) fireworks[i].update();
-    for(int i = 0; i < 3; i++) fireworks[i].draw();
+    for(int i = 0; i < 1; i++) fireworks[i].update();
+    for(int i = 0; i < 1; i++) fireworks[i].draw();
+
+    show();
+  }
+}
+
+class Rocket {
+public:
+  int pos;
+  char dir;
+
+  Rocket() {
+    pos = random(NUM_LIGHTS);
+    dir = random(100) < 50;
+  }
+
+  void update() {
+    pos = (pos + (dir*2)-1 + NUM_LIGHTS * 2) % (NUM_LIGHTS * 2);
+    if(pos == 0) {
+      dir = random(100) < 50;
+    }
+  }
+
+  void draw() {
+    draw_rocket(pos, 12, dir, true);
+  }
+};
+
+void prg_rocket() {
+  constexpr int tail_size = 16;
+
+  srand(millis());
+  
+  Rocket rockets[3];
+
+  while(sleep(sped)) {
+    for(CRGB& led : leds) led.nscale8(251);
+
+    for(int i = 0; i < 3; i++) rockets[i].update();
+    for(int i = 0; i < 3; i++) rockets[i].draw();
 
     show();
   }

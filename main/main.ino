@@ -43,7 +43,7 @@ void reset() {
   sound_index = 0;
   avrage_sound = 0;
   paused = false;
-  last_command = IRCode::None;
+  last_command = IRCode::Upp;
   clear();
 }
 
@@ -154,6 +154,9 @@ void poll_inputs() {
     switch(ircode) {
       case IRCode::Ok:
         program = (program + 1) % NUM_PROGS;
+        Serial.print("Set program to id: ");
+        Serial.println(program);
+        break;
       case IRCode::Left: case IRCode::Right: case IRCode::Upp: case IRCode::Down:
         //color = (color + 20) % 256;
         last_command = ircode;
@@ -254,7 +257,7 @@ void poll_inputs() {
           break;
       }
     }
-    last_command = IRCode::None;
+    //last_command = IRCode::None;
   }
 }
 
@@ -297,7 +300,7 @@ void draw_rocket(int pos, char length, char dir, bool blow) {
     }
   } else {
     for(int i = 0; i < 6; i++) {
-      int index = pos+random(32)-16;
+      int index = pos+random(length)-length/2;
       if(index >= 0 && index < NUM_LIGHTS) {
         CHSV led = rgb2hsv_approximate(leds[index]);// = CHSV(color, 205, min(255, max(brightness+random(64)-32, 0)));
         led.v += random(32)+brightness-16;
@@ -391,8 +394,8 @@ void loop() {
     case 15: prg_epelepsi_all_colors ();              break;
     case 16: prg_fill_from_center_many_colors();      break;
     case 17: prg_fill_from_sides_many_colors();       break;
-    /*case 18: prg_rainbow_every_other_rotating();      break;*/
-    case 19: prg_bouncing_rainbow();                  break;
+    case 18: prg_rocket();                            break;
+    case 19: prg_firework();                          break;
     case 20: prg_ping_pong_single_color();            break;
     case 21: prg_ping_pong_many_colors();             break;
     case 22: prg_stars_single_color();                break;
@@ -411,7 +414,7 @@ void loop() {
     case 33: prg_fade_in_out_single_color();          break;
     case 34: prg_fade_in_out_many_colors();           break;
     case 35: prg_every_other_led_rotating();          break;
-    case 36: prg_firework();                          break;
+    case 36: prg_bouncing_rainbow();                  break;
     case 37: prg_white();                             break;
     case 38: prg_fade_to_white_single_color();        break;
     case 39: prg_fade_to_white_many_colors();         break;
