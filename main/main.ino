@@ -153,19 +153,24 @@ void poll_inputs() {
     
     switch(ircode) {
       case IRCode::Ok:
-        program = (program + 1) % NUM_PROGS;
-        Serial.print("Set program to id: ");
-        Serial.println(program);
+        if(program != -1) {
+          last_program = program;
+          program = (program + 1) % NUM_PROGS;
+          Serial.print("Set program to id: ");
+          Serial.println(program);
+        }
         break;
       case IRCode::Left: case IRCode::Right: case IRCode::Upp: case IRCode::Down:
         //color = (color + 20) % 256;
-        last_command = ircode;
-        if(paused) {
-          num_index = 3;
-          break;
-        }
+        if(program != -1) {
+          last_command = ircode;
+          if(paused) {
+            num_index = 3;
+            break;
+          }
 
-        paused = true;
+          paused = true;
+        }
         //color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
       /*case IRCode::Right:
@@ -187,18 +192,18 @@ void poll_inputs() {
         brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
         break;*/
       case IRCode::Hashtag:
-        reset();
+        if(program != -1) reset();
         break;
       case IRCode::Asterix:
-        /*if(program == -1) program = last_program;
+        if(program == -1) program = last_program;
         else              program = -1;
-        break;*/
-        Serial.println("DEBUG INFO:");
+        break;
+        /*Serial.println("DEBUG INFO:");
         Serial.print("Program:");     Serial.println(program);
         Serial.print("Speed:");       Serial.println(sped);
         Serial.print("Brightness:");  Serial.println(brightness);
         Serial.print("Color:");       Serial.println(color);
-        Serial.print("Num:");         Serial.println(num);
+        Serial.print("Num:");         Serial.println(num);*/
 
         break;
       default:
