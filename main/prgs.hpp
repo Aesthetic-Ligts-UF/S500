@@ -1266,7 +1266,7 @@ void prg_flare_ups_many_colors() {
 void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
   show();
-  while(sleep(1000));   
+  while(sleep(10));   
 }
 
 void prg_sound_single_color() {
