@@ -154,8 +154,8 @@ void poll_inputs() {
     switch(ircode) {
       case IRCode::Ok:
         if(program != -1) {
-          last_program = program;
           program = (program + 1) % NUM_PROGS;
+          last_program = program;
           Serial.print("Set program to id: ");
           Serial.println(program);
         }
