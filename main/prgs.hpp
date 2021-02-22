@@ -310,7 +310,7 @@ void prg_sin_many_colors() {
 }
 
 void prg_comet_single_color() {
-  int trail_length = 12;
+  int trail_length = 16;
 
   int i = 0;
   while(sleep(sped)) {
@@ -328,7 +328,7 @@ void prg_comet_single_color() {
 }
 
 void prg_comet_many_colors() {
-  int trail_length = 12;
+  int trail_length = 16;
 
   int i = 0;
   while(sleep(sped)) {
@@ -348,7 +348,7 @@ void prg_comet_many_colors() {
 void prg_many_comets_single_color() {
   srand(millis());
 
-  int trail_length = 12;
+  int trail_length = 16;
 
   int comets[3];
   char dir[3];
@@ -382,7 +382,7 @@ void prg_many_comets_single_color() {
 void prg_many_comets_single_color_one_dir() {
   srand(millis());
 
-  int trail_length = 12;
+  int trail_length = 16;
 
   int comets[3];
   char dir[3];
@@ -414,7 +414,7 @@ void prg_many_comets_single_color_one_dir() {
 void prg_many_comets_many_colors() {
   srand(millis());
 
-  int trail_length = 12;
+  int trail_length = 16;
 
   int comets[3];
   char dir[3];
@@ -446,7 +446,7 @@ void prg_many_comets_many_colors() {
 }
 
 void prg_ping_pong_single_color() {
-  int trail_length = 12;
+  int trail_length = 16;
 
   char dir = 0;
   int i = 0;
@@ -472,7 +472,7 @@ void prg_ping_pong_single_color() {
 }
 
 void prg_ping_pong_many_colors() {
-  int trail_length = 12;
+  int trail_length = 16;
 
   char dir = 0;
   int i = 0;
@@ -677,22 +677,22 @@ void prg_rainbow_every_other_rotating() {
 void prg_random() {
   randomSeed(analogRead(0));
   CRGBPalette16 palette(
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness),
-    CHSV(random(256), 255, brightness)
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255),
+    CHSV(random(256), 255, 255)
   );
   
   TBlendType current_blending = LINEARBLEND;
@@ -841,7 +841,7 @@ void prg_fill_from_center_many_colors() {
       leds[i].b *= 0.9;
     }
 
-    for(int i = NUM_LIGHTS/2-size; i < NUM_LIGHTS/2+size; i++) {
+    for(int i = NUM_LIGHTS/2-size-1; i <= NUM_LIGHTS/2+size; i++) {
       leds[i] = CHSV(color+i, 255, brightness);
     }
 
