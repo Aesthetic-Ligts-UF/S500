@@ -32,108 +32,71 @@
 #include <lib8tion.h>
 
 void prg_epelepsi_single_color() {
-  /*unsigned char offset[NUM_LIGHTS];
-
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    offset[i] = random(100);
-  }
-  
-  clear();
-
-  int l = 0;
-
-  while(sleep(sped)) {
-
-    l += 5;
-
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      //float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      int b = (sin8(i+l+offset[i]) - 127) >> 1;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
-      leds[i] = CHSV(color, 255, b+brightness);
-    }
-
-    show();
-  }*/
+  bool black = false;
   while(sleep(max(COLOR_LVLS[4], sped))) {
-    int col = random(256);
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      //float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      /*int b = (sin8(i+l+offset[i]) - 127) >> 1;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);*/
-      //leds[i] = CHSV(color, 255, random(brightness));
-      leds[i] = CHSV(col, 255, brightness);
-    }
+    if(black) {
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CRGB(0, 0, 0);
+      }
 
-    show();
+      show();
+    } else {
+      int col = random(256);
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CHSV(col, 255, brightness);
+      }
+
+      show();
+    }
+    black = !black;
   }
-  
 }
 
-//RAND BE SLOW AS HEK!!!
-
 void prg_epelepsi_many_colors() {
-  /*unsigned char offset[NUM_LIGHTS];
+  bool black = false;
+  while(sleep(max(COLOR_LVLS[4], sped))) {
+    if(black) {
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CRGB(0, 0, 0);
+      }
 
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    offset[i] = random(100);
-  }
-  
-  clear();
+      show();
+    } else {
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CHSV(color+random(100), 255, brightness);
+      }
 
-  int l = 0;*/
-
-  while(sleep(max(COLOR_LVLS[4]*0, sped))) {
-
-    //l += 5;
-
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      //float b = sin((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      /*int b = (sin8(i+l+offset[i]) - 127) >> 1;
-      b = min(brightness+b, 255.0);
-      b = max(b, 0.0);
-      leds[i] = CHSV(color+offset[i], 255, b);*/
-      leds[i] = CHSV(color+random(100), 255, brightness);
+      show();
     }
-
-    show();
+    black = !black;
   }
 }
 
 
 void prg_epelepsi_all_colors() {
-  /*unsigned char offset[NUM_LIGHTS];
+  bool black = false;
+  while(sleep(max(COLOR_LVLS[4], sped))) {
+    if(black) {
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CRGB(0, 0, 0);
+      }
 
-  for(int i = 0; i < NUM_LIGHTS; i++) {
-    offset[i] = random(256);
-  }
-  
-  clear();
+      show();
+    } else {
+      for(int i = 0; i < NUM_LIGHTS; i++) {
+        leds[i] = CHSV(color+random(256), 255, brightness);
+      }
 
-  int l = 0;*/
-
-  while(sleep(max(COLOR_LVLS[4]*0, sped))) {
-
-    //l += 5;
-
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      //float b = sin8((float)(i+l+offset[i])/(float)NUM_LIGHTS*3.1415*2.0)*80.0;
-      /*int b = (sin8(i+l+offset[i]) - 127) >> 1;
-      b = min(brightness+b, 255);
-      b = max(b, 0);
-      leds[i] = CHSV(offset[i], 255, b);*/
-      leds[i] = CHSV(color+random(256), 255, brightness);
+      show();
     }
-
-    show();
+    black = !black;
   }
 }
 
 void prg_single_color() {
   //Serial.println("1");  
   while(sleep(sped)) {
+    
     //Serial.println("2");  
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, 255, brightness);

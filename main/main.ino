@@ -153,6 +153,9 @@ void poll_inputs() {
     
     switch(ircode) {
       case IRCode::Ok:
+        /*color = (color + 4) % 256;
+        Serial.println(color);*/
+    
         if(program != -1) {
           program = (program + 1) % NUM_PROGS;
           last_program = program;
