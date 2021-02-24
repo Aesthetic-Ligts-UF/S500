@@ -28,6 +28,16 @@
 #include "prgs.hpp"
 #include "helper.hpp"
 
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_LOG(x) Serial.print(x); 
+#define DEBUG_LOGLN(x) Serial.println(x); 
+#else
+#define DEBUG_LOG(x)
+#define DEBUG_LOGLN(x)
+#endif
+
 void clear() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
     leds[i] = CRGB(0, 0, 0);
@@ -48,7 +58,6 @@ void reset() {
 }
 
 void poll_sound() {
-  //Serial.println(analogRead(A0));
   sound_lvls[sound_index++] = max(analogRead(A0) - STANDARD_SOUND_LVL, 0);
 
   if(sound_index >= 8) {
@@ -61,17 +70,8 @@ void poll_sound() {
       sum += sound_lvls[i];
     }
     avrage_sound = sum / 8;
-    //Serial.println(avrage_sound);
   }
-
-  //Serial.println(analogRead(A0));
 }
-
-/*TODO 
-OK step thru prgs
-ASTERIX POWER BUTTON
-HASHTAG RESET BUTTON
-*/
 
 void poll_inputs() {
   static char num_str[4] = "0\0\0";
@@ -80,7 +80,6 @@ void poll_inputs() {
   static long int num_last_time = 0;
   static long int num_reset_time = 0;
   static char last_char = 0;
-  //color = COLOR_LVLS[(millis()/2000)%12];
 
   if(millis() > num_last_time + 2000 && num_index != 0) {
     num_index = 3;
@@ -88,14 +87,14 @@ void poll_inputs() {
 
   if(irrecv.decode(&results)) {
     // Print Code in HEX
-    Serial.print("Infra red signal: ");
-    Serial.println(results.value, HEX);
+    DEBUG_LOG("Infra red signal: ");
+    DEBUG_LOGLN(results.value, HEX);
     
     if(results.overflow) {
       irparams = irparams_struct{};
       irrecv = IRrecv(RECV_PIN);
       results = decode_results{};
-      Serial.println("ERROR Overflow detected!!!");
+      DEBUG_LOGLN("ERROR Overflow detected!!!");
     }
 
     irrecv.resume();
@@ -153,18 +152,14 @@ void poll_inputs() {
     
     switch(ircode) {
       case IRCode::Ok:
-        /*color = (color + 4) % 256;
-        Serial.println(color);*/
-    
         if(program != -1) {
           program = (program + 1) % NUM_PROGS;
           last_program = program;
-          Serial.print("Set program to id: ");
-          Serial.println(program);
+          DEBUG_LOG("Set program to id: ");
+          DEBUG_LOGLN(program);
         }
         break;
       case IRCode::Left: case IRCode::Right: case IRCode::Upp: case IRCode::Down:
-        //color = (color + 20) % 256;
         if(program != -1) {
           last_command = ircode;
           if(paused) {
@@ -174,40 +169,13 @@ void poll_inputs() {
 
           paused = true;
         }
-        //color = COLOR_LVLS[num % NUM_COLOR_LVLS];
         break;
-      /*case IRCode::Right:
-        last_command = IRCode::Rights;
-        sped = SPEED_LVLS[last_char];
-        break;
-      case IRCode::Upp:
-        last_command = IRCode::Upp;
-        //program = (program + 1) % NUM_PROGS;
-        if(paused) {
-          num_index = 3;
-          break;
-        }
-
-        paused = true;
-        
-        break;
-      case IRCode::Down:
-        brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
-        break;*/
       case IRCode::Hashtag:
         if(program != -1) reset();
         break;
       case IRCode::Asterix:
         if(program == -1) program = last_program;
         else              program = -1;
-        break;
-        /*Serial.println("DEBUG INFO:");
-        Serial.print("Program:");     Serial.println(program);
-        Serial.print("Speed:");       Serial.println(sped);
-        Serial.print("Brightness:");  Serial.println(brightness);
-        Serial.print("Color:");       Serial.println(color);
-        Serial.print("Num:");         Serial.println(num);*/
-
         break;
       default:
         break;
@@ -225,10 +193,10 @@ void poll_inputs() {
       last_char = num_str[0] - '0';
     }
 
-    Serial.print("User inputed: ");
-    Serial.println(num_str);
-    Serial.print("Last digit: ");
-    Serial.println(int(last_char));
+    DEBUG_LOG("User inputed: ");
+    DEBUG_LOGLN(num_str);
+    DEBUG_LOG("Last digit: ");
+    DEBUG_LOGLN(int(last_char));
 
     num_str[0] = '0';
     num_str[1] = '\0';
@@ -242,30 +210,29 @@ void poll_inputs() {
         case IRCode::Upp:
           program = num % NUM_PROGS;
           last_program = program;
-          Serial.print("Set program to id: ");
-          Serial.println(program);
+          DEBUG_LOG("Set program to id: ");
+          DEBUG_LOGLN(program);
           break;
         case IRCode::Down:
           brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
-          Serial.print("Set brightness to lvl: ");
-          Serial.println(brightness);
+          DEBUG_LOG("Set brightness to lvl: ");
+          DEBUG_LOGLN(brightness);
           break;
         case IRCode::Right:
           sped = SPEED_LVLS[last_char];
-          Serial.print("Set speed to lvl: ");
-          Serial.println(sped);
+          DEBUG_LOG("Set speed to lvl: ");
+          DEBUG_LOGLN(sped);
           break;
         case IRCode::Left:
           color = COLOR_LVLS[num % NUM_COLOR_LVLS];
-          Serial.print("Set color to lvl: ");
-          Serial.println(color);
+          DEBUG_LOG("Set color to lvl: ");
+          DEBUG_LOGLN(color);
           break;
         default:
-          Serial.println("Unknown command entered! This should only happen if you just press the numpad and don't select any command!");
+          DEBUG_LOGLN("Unknown command entered! This should only happen if you just press the numpad and don't select any command!");
           break;
       }
     }
-    //last_command = IRCode::None;
   }
 }
 
@@ -284,7 +251,6 @@ void rotate(char amount) {
 void draw_tail_single_color(unsigned char pos, char length, char dir, int color) {
   for(int j = 0; j < length; j++) {
     if(pos-j > 0 && pos-j < NUM_LIGHTS) {
-      //leds[abs((NUM_LIGHTS * -dir)+(pos-j))] = CHSV(color, 255, brightness * (1.0 - (float)j/length));
       leds[pos-j] = CHSV(color, 255, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
     }
   }
@@ -371,17 +337,9 @@ void setup() {
   FastLED.setBrightness( 255 );
 
   reset();
-
-  /*for(int i : COLOR_LVLS) {
-    Serial.println(i);
-  }*/
 }
 
 void loop() {
-  /*while(1) {
-    poll_inputs();
-  }*/
-
   switch (program) {
     case-1: prg_off();                                break;
     case 0: prg_single_color();                       break;
@@ -414,8 +372,6 @@ void loop() {
     case 27: prg_every_other_led();                   break;
     case 28: prg_every_other_led_fade();              break;
     case 29: prg_fill_from_center();                  break;
-    //TODO add fill from sides many colors
-    //TODO add flare sides flare center flare all
     case 30: prg_fill_from_sides();                   break;
     case 31: prg_fill_from_sides_and_back();          break;
     case 32: prg_fill_from_sides_and_fade();          break;

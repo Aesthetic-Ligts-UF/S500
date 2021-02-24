@@ -64,22 +64,6 @@ const int COLOR_LVLS[NUM_COLOR_LVLS] = {
     220,//PINK
 };
 
-/*const int COLOR_LVLS[NUM_COLOR_LVLS] = {
-    (0   / 360.0) * 255,//RED
-    (30  / 360.0) * 255,//ORANGE
-    (60  / 360.0) * 255,//YELLOW
-    (90  / 360.0) * 255,//LIGHT_GREEN
-    (120 / 360.0) * 255,//GREEN
-    (150 / 360.0) * 255,//TEAL
-    (180 / 360.0) * 255,//LIGHT_BLUE
-    (210 / 360.0) * 255,//BLUE
-    (240 / 360.0) * 255,//DARK_BLUE
-    (270 / 360.0) * 255,//PURPLE
-    (300 / 360.0) * 255,//MAGENTA
-    (330 / 360.0) * 255,//PINK
-};*/
-
-
-constexpr int STANDARD_SOUND_LVL = 448;
+constexpr int STANDARD_SOUND_LVL = 500;
 
 #endif

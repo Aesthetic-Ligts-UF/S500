@@ -94,16 +94,13 @@ void prg_epelepsi_all_colors() {
 }
 
 void prg_single_color() {
-  //Serial.println("1");  
   while(sleep(sped)) {
     
-    //Serial.println("2");  
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, 255, brightness);
     }
     show();
   }
-  //Serial.println("3");  
 }
 
 void prg_many_colors() {
@@ -468,7 +465,6 @@ void prg_stars_single_color() {
   for(int i = 0; i < 100; i++) {
     stars[i] = j;
     j += NUM_LIGHTS / 100.0f;
-    //Serial.println((int)stars[i]);
     offset[i] = random(100);
   }
   
@@ -503,7 +499,6 @@ void prg_stars_all_color() {
   for(int i = 0; i < 100; i++) {
     stars[i] = j;
     j += NUM_LIGHTS / 100.0f;
-    //Serial.println((int)stars[i]);
     offset[i] = random(100);
   }
   
@@ -774,13 +769,7 @@ void prg_every_other_led_rotating() {
 
       leds[(i+index)%NUM_LIGHTS]              = CHSV(color, 255, b);
       leds[(i+1-index+NUM_LIGHTS)%NUM_LIGHTS] = CHSV(color+127, 255, 255-b);
-
-      //Serial.println((i+index)%NUM_LIGHTS);
-      //Serial.println((i+1-index+NUM_LIGHTS)%NUM_LIGHTS);
-      //Serial.println();
     }
-
-    //while(1);
 
     j += 1;
     index += 2;
@@ -1245,7 +1234,6 @@ void prg_sound_single_color() {
 void prg_sound_many_colors() {
   while(sleep(sped)) {
     float val = avrage_sound / 8.0f;
-    //Serial.println(val);
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color*val+(1.0-val)*i, 255, brightness);
     } 
@@ -1255,8 +1243,7 @@ void prg_sound_many_colors() {
 
 void prg_sound_single_color_fade() {
   while(sleep(sped)) {
-    int val = avrage_sound*5;
-    //Serial.println(val);
+    int val = avrage_sound / 8.0f;
     for(int i = 0; i < NUM_LIGHTS; i++) {
       leds[i] = CHSV(color, val, brightness);
     } 
@@ -1267,7 +1254,6 @@ void prg_sound_single_color_fade() {
 void prg_sound_rotating() {
   while(sleep(sped)) {
     int val = avrage_sound;
-    //Serial.println(val);
     leds[0] = CHSV(COLOR_LVLS[val%NUM_COLOR_LVLS], 255, brightness); 
     show();
     rotate(1);
