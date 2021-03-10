@@ -28,16 +28,6 @@
 #include "prgs.hpp"
 #include "helper.hpp"
 
-#define DEBUG
-
-#ifdef DEBUG
-#define DEBUG_LOG(x) Serial.print(x); 
-#define DEBUG_LOGLN(x) Serial.println(x); 
-#else
-#define DEBUG_LOG(x)
-#define DEBUG_LOGLN(x)
-#endif
-
 void clear() {
   for(int i = 0; i < NUM_LIGHTS; i++) {
     leds[i] = CRGB(0, 0, 0);
@@ -251,15 +241,19 @@ void rotate(char amount) {
 void draw_tail_single_color(unsigned char pos, char length, char dir, int color) {
   for(int j = 0; j < length; j++) {
     if(pos-j > 0 && pos-j < NUM_LIGHTS) {
-      leds[pos-j] = CHSV(color, 255, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
+      if(dir) leds[pos-j] = CHSV(color, 255, brightness * (1.0 - (float)((length-1)*dir+j*-dir)/length));
+      else    leds[pos-j] = CHSV(color, 255, brightness * (1.0 - (float)j/length));
+      //DEBUG_LOGLN(brightness * (1.0 - (float)((length-1)*dir+j*-dir)/length));
     }
   }
+  //while(1);
 }
 
 void draw_tail_many_colors(unsigned char pos, char length, char dir, int color) {
   for(int j = 0; j < length; j++) {
     if(pos-j > 0 && pos-j < NUM_LIGHTS) {
-      leds[pos-j] = CHSV(color+pos-j, 255, brightness * (1.0 - (float)((length-1)*-dir+j)/length));
+      if(dir) leds[pos-j] = CHSV(color+pos-j, 255, brightness * (1.0 - (float)((length-1)*dir+j*-dir)/length));
+      else    leds[pos-j] = CHSV(color+pos-j, 255, brightness * (1.0 - (float)j/length));
     }
   }
 }

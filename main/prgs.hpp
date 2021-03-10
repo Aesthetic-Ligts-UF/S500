@@ -320,7 +320,42 @@ void prg_many_comets_single_color() {
     clear();
 
     for(int i = 0; i < 3; i++) {
-      draw_tail_single_color(comets[i], trail_length, 0, color);
+      draw_tail_single_color(comets[i], trail_length, !dir[i], color);
+
+      comets[i] += (dir[i]*2)-1;
+
+      if(comets[i] >= NUM_LIGHTS+trail_length) {
+        comets[i] = 0;
+      } else if(comets[i] < 0) {
+        comets[i] = NUM_LIGHTS-1-comets[i];
+      }
+
+      if(random(10000) > 9940) {
+        dir[i] = random(100) < 50;
+      }
+    }
+
+    show();
+  }
+}
+
+void prg_many_comets_many_colors() {
+  srand(millis());
+
+  int trail_length = 16;
+
+  int comets[3];
+  char dir[3];
+
+  for(int i = 0; i < 3; i++) comets[i] = random(NUM_LIGHTS);
+  for(int i = 0; i < 3; i++) dir[i] = random(100) < 50;
+  
+  while(sleep(sped)) {
+    clear();
+
+    for(int i = 0; i < 3; i++) {
+      //DEBUG_LOGLN(int(dir[i]));
+      draw_tail_many_colors(comets[i], trail_length, !dir[i], color);
 
       comets[i] += (dir[i]*2)-1;
 
@@ -345,12 +380,10 @@ void prg_many_comets_single_color_one_dir() {
   int trail_length = 16;
 
   int comets[3];
-  char dir[3];
 
   comets[0] = 20;
   comets[1] = 60;
   comets[2] = 120;
-  for(int i = 0; i < 3; i++) dir[i] = 1;
   
   while(sleep(sped)) {
     clear();
@@ -358,46 +391,12 @@ void prg_many_comets_single_color_one_dir() {
     for(int i = 0; i < 3; i++) {
       draw_tail_single_color(comets[i], trail_length, 0, color);
 
-      comets[i] += (dir[i]*2)-1;
+      comets[i] += 1;
 
       if(comets[i] >= NUM_LIGHTS+trail_length) {
         comets[i] = 0;
       } else if(comets[i] < 0) {
         comets[i] = NUM_LIGHTS-1-comets[i];
-      }
-    }
-
-    show();
-  }
-}
-
-void prg_many_comets_many_colors() {
-  srand(millis());
-
-  int trail_length = 16;
-
-  int comets[3];
-  char dir[3];
-
-  for(int i = 0; i < 3; i++) comets[i] = random(NUM_LIGHTS);
-  for(int i = 0; i < 3; i++) dir[i] = random(100) < 50;
-  
-  while(sleep(sped)) {
-    clear();
-
-    for(int i = 0; i < 3; i++) {
-      draw_tail_many_colors(comets[i], trail_length, 0, color);
-
-      comets[i] += (dir[i]*2)-1;
-
-      if(comets[i] >= NUM_LIGHTS+trail_length) {
-        comets[i] = 0;
-      } else if(comets[i] < 0) {
-        comets[i] = NUM_LIGHTS-1-comets[i];
-      }
-
-      if(random(10000) > 9940) {
-        dir[i] = random(100) < 50;
       }
     }
 
@@ -484,7 +483,7 @@ void prg_stars_single_color() {
       int b = (sin8(i+l+offset[i]) - 127) >> 1;
       b = min(brightness+b, 255);
       b = max(b, 0);
-      leds[stars[i]] = CHSV(color, 55, b);
+      leds[stars[i]] = CHSV(color, 155, b);
     }
 
     show();
@@ -519,7 +518,7 @@ void prg_stars_all_color() {
       int b = (sin8(i+l+offset[i]) - 127) >> 1;
       b = min(brightness+b, 255);
       b = max(b, 0);
-      leds[stars[i]] = CHSV(color+offset[i], 55, b);
+      leds[stars[i]] = CHSV(color+offset[i], 155, b);
     }
 
     show();
@@ -682,7 +681,7 @@ void prg_snake() {
     }
 
     if((snake_pos+snake_size)%NUM_LIGHTS==food_pos) {
-      food_pos = random(NUM_LIGHTS-2)+1;
+      food_pos = random(NUM_LIGHTS-5)+2;
       snake_size++;
 
       for(int i = 0; i < NUM_LIGHTS; i++) {
@@ -702,9 +701,11 @@ void prg_snake() {
       leds[i%NUM_LIGHTS] = CHSV(100, 255, brightness); 
     }
 
-    leds[food_pos-1] = CHSV(0, 255, brightness);
+    leds[food_pos-2] = CHSV(0, 255, brightness*0.5);
+    leds[food_pos-1] = CHSV(0, 255, brightness*0.75);
     leds[food_pos] = CHSV(0, 255, brightness);
-    leds[food_pos+1] = CHSV(0, 255, brightness);
+    leds[food_pos+1] = CHSV(0, 255, brightness*0.75);
+    leds[food_pos+2] = CHSV(0, 255, brightness*0.5);
 
     show();
   }
@@ -999,7 +1000,7 @@ public:
     if(!blew) {
       draw_rocket(pos, 12, dir, false);
     } else {
-      draw_rocket(NUM_LIGHTS/2, 100, dir, true);
+      draw_rocket(NUM_LIGHTS/2, 40, dir, true);
     }
   }
 };
@@ -1065,8 +1066,6 @@ void prg_rocket() {
 void prg_bouncing_comets() {
   srand(millis());
 
-  int c = color;
-
   int pos[2];
   for(int i = 0; i < 2; i++) pos[i] = random(NUM_LIGHTS);
 
@@ -1074,27 +1073,22 @@ void prg_bouncing_comets() {
   dir[0] = 0;
   dir[1] = 1;
 
-  char color[2];
-  for(int i = 0; i < 2; i++) color[i] = random(256);
-
   while(sleep(sped)) {
     for(CRGB& led : leds) led.nscale8(200);
+    //clear();
 
     for(int i = 0; i < 2; i++) {
-      draw_tail_single_color(pos[i], 8, dir[i], color[i]);
+      draw_tail_single_color(pos[i], 8, !dir[i], color+i*128);
       pos[i] = (pos[i] + (dir[i]*2)-1 + NUM_LIGHTS) % (NUM_LIGHTS);
 
       for(int j = 0; j < 2; j++) {
-        if(pos[i] == pos[j] && i != j) {
-          color[j] = (color[j] + 5) % 256;
-          color[i] = (color[i] + 5) % 256;
+        if((pos[i]+dir[i]*8)%NUM_LIGHTS == (pos[j]+dir[j]*8)%NUM_LIGHTS && i != j) {
           dir[i] = !dir[i];
           dir[j] = !dir[j];
         }
       }
 
       if(random(10000) > 9940) {
-        color[i] = (color[i] + random(60)) % 256;
         pos[i] = (pos[i] + random(8)) % NUM_LIGHTS; //TODO make sure that they dont spawn on the same posisiton
       }
     }

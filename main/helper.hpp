@@ -24,6 +24,16 @@
 #ifndef HELPER_H_INCLUDED
 #define HELPER_H_INCLUDED
 
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_LOG(...) Serial.print(__VA_ARGS__); 
+#define DEBUG_LOGLN(...) Serial.println(__VA_ARGS__); 
+#else
+#define DEBUG_LOG(...)
+#define DEBUG_LOGLN(...)
+#endif
+
 enum class IRCode : long long {
   None    = 0x000000,
   One     = 0xFFA25D,
