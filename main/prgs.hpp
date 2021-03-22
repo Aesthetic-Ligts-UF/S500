@@ -33,7 +33,7 @@
 
 void prg_epelepsi_single_color() {
   bool black = false;
-  while(sleep(max(COLOR_LVLS[4], sped))) {
+  while(sleep(max(SPEED_LVLS[6], sped))) {
     if(black) {
       for(int i = 0; i < NUM_LIGHTS; i++) {
         leds[i] = CRGB(0, 0, 0);
@@ -54,7 +54,7 @@ void prg_epelepsi_single_color() {
 
 void prg_epelepsi_many_colors() {
   bool black = false;
-  while(sleep(max(COLOR_LVLS[4], sped))) {
+  while(sleep(max(SPEED_LVLS[6], sped))) {
     if(black) {
       for(int i = 0; i < NUM_LIGHTS; i++) {
         leds[i] = CRGB(0, 0, 0);
@@ -75,7 +75,7 @@ void prg_epelepsi_many_colors() {
 
 void prg_epelepsi_all_colors() {
   bool black = false;
-  while(sleep(max(COLOR_LVLS[4], sped))) {
+  while(sleep(max(SPEED_LVLS[6], sped))) {
     if(black) {
       for(int i = 0; i < NUM_LIGHTS; i++) {
         leds[i] = CRGB(0, 0, 0);
@@ -381,9 +381,9 @@ void prg_many_comets_single_color_one_dir() {
 
   int comets[3];
 
-  comets[0] = 20;
-  comets[1] = 60;
-  comets[2] = 120;
+  comets[0] = NUM_LIGHTS/3*0;
+  comets[1] = NUM_LIGHTS/3*1;
+  comets[2] = NUM_LIGHTS/3*2;
   
   while(sleep(sped)) {
     clear();
@@ -457,14 +457,16 @@ void prg_ping_pong_many_colors() {
 }
 
 void prg_stars_single_color() {
-  unsigned char stars[100];
-  unsigned char offset[100];
+  unsigned char NUM_LIGHTS75 = NUM_LIGHTS * 0.75;
+
+  unsigned char stars[NUM_LIGHTS75];
+  unsigned char offset[NUM_LIGHTS75];
 
   float j = 0;
-  for(int i = 0; i < 100; i++) {
+  for(int i = 0; i < NUM_LIGHTS75; i++) {
     stars[i] = j;
-    j += NUM_LIGHTS / 100.0f;
-    offset[i] = random(100);
+    j += NUM_LIGHTS / (float)NUM_LIGHTS75;
+    offset[i] = random(NUM_LIGHTS75);
   }
   
   clear();
@@ -475,7 +477,7 @@ void prg_stars_single_color() {
 
     l += 1;
 
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < NUM_LIGHTS75; i++) {
       
       /*float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
@@ -491,14 +493,16 @@ void prg_stars_single_color() {
 }
 
 void prg_stars_all_color() {
-  unsigned char stars[100];
-  unsigned char offset[100];
+  unsigned char NUM_LIGHTS75 = NUM_LIGHTS * 0.75;
+
+  unsigned char stars[NUM_LIGHTS75];
+  unsigned char offset[NUM_LIGHTS75];
 
   float j = 0;
-  for(int i = 0; i < 100; i++) {
+  for(int i = 0; i < NUM_LIGHTS75; i++) {
     stars[i] = j;
-    j += NUM_LIGHTS / 100.0f;
-    offset[i] = random(100);
+    j += NUM_LIGHTS / (float)NUM_LIGHTS75;
+    offset[i] = random(NUM_LIGHTS75);
   }
   
   clear();
@@ -509,7 +513,7 @@ void prg_stars_all_color() {
 
     l += 1;
 
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < NUM_LIGHTS75; i++) {
       /*float b = sin((float)(i+l+offset[i])/(float)100*3.1415*2.0)*80.0;
       b = min(brightness+b, 255.0);
       b = max(b, 0.0);
@@ -669,7 +673,7 @@ void prg_random() {
 void prg_snake() {
   int snake_pos = 0;
   int snake_size = 1;
-  int food_pos = 100;
+  int food_pos = NUM_LIGHTS/2;
 
   while(sleep(sped)) {
 
