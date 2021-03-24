@@ -37,9 +37,9 @@ void clear() {
 void reset() {
   program = 0;
   last_program = program;
-  sped = 1;
+  sped = SPEED_LVLS[5];
   brightness = 128;
-  color = COLOR_LVLS[0];
+  color = COLOR_LVLS[5];
   sound_index = 0;
   avrage_sound = 0;
   paused = false;
@@ -204,17 +204,17 @@ void poll_inputs() {
           DEBUG_LOGLN(program);
           break;
         case IRCode::Down:
-          brightness = BRIGHTNESS_LVLS[num % NUM_BRIGHTNESS_LVLS];
+          brightness = BRIGHTNESS_LVLS[last_char];
           DEBUG_LOG("Set brightness to lvl: ");
           DEBUG_LOGLN(brightness);
           break;
         case IRCode::Right:
-          sped = SPEED_LVLS[last_char];
+          sped = SPEED_LVLS[SPEED_LVLS - last_char];
           DEBUG_LOG("Set speed to lvl: ");
           DEBUG_LOGLN(sped);
           break;
         case IRCode::Left:
-          color = COLOR_LVLS[num % NUM_COLOR_LVLS];
+          color = COLOR_LVLS[last_char];
           DEBUG_LOG("Set color to lvl: ");
           DEBUG_LOGLN(color);
           break;
