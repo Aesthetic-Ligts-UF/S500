@@ -37,15 +37,15 @@ constexpr int NUM_LIGHTS = 150;
 constexpr long din_mamma_1 = 0x7100AB;
 constexpr long din_mamma_2 = 0xFF35AB;
 
-constexpr int NUM_SPEED_LVLS = 12;
+constexpr int NUM_SPEED_LVLS = 10;
 
-const int SPEED_LVLS[10] = {
+const int SPEED_LVLS[NUM_SPEED_LVLS] = {
     1, 2, 4, 8, 16, 32, 64, 128, 256, 512
 };
 
-constexpr int NUM_BRIGHTNESS_LVLS = 12;
+constexpr int NUM_BRIGHTNESS_LVLS = 10;
 
-const int BRIGHTNESS_LVLS[10] = {
+const int BRIGHTNESS_LVLS[NUM_BRIGHTNESS_LVLS] = {
     0, 25, 50, 75, 100, 125, 150, 175, 200, 255
 };
 

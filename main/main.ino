@@ -209,7 +209,7 @@ void poll_inputs() {
           DEBUG_LOGLN(brightness);
           break;
         case IRCode::Right:
-          sped = SPEED_LVLS[SPEED_LVLS - last_char];
+          sped = SPEED_LVLS[NUM_SPEED_LVLS - last_char];
           DEBUG_LOG("Set speed to lvl: ");
           DEBUG_LOGLN(sped);
           break;
