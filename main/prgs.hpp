@@ -31,6 +31,14 @@
 #include <IRremote.h>
 #include <lib8tion.h>
 
+void prg_custom() {
+  while(sleep(20)) {
+    Serial.readBytes((char*)(&leds[0]), NUM_LIGHTS * 3);
+    Serial.println("ready");
+    show();
+  }
+}
+
 void prg_epelepsi_single_color() {
   bool black = false;
   while(sleep(max(SPEED_LVLS[6], sped))) {
@@ -354,7 +362,6 @@ void prg_many_comets_many_colors() {
     clear();
 
     for(int i = 0; i < 3; i++) {
-      //DEBUG_LOGLN(int(dir[i]));
       draw_tail_many_colors(comets[i], trail_length, !dir[i], color);
 
       comets[i] += (dir[i]*2)-1;
@@ -473,7 +480,7 @@ void prg_stars_single_color() {
 
   int l = 0;
 
-  while(sleep(1)) {
+  while(sleep(sped)) {
 
     l += 1;
 
@@ -509,7 +516,7 @@ void prg_stars_all_color() {
 
   int l = 0;
 
-  while(sleep(1)) {
+  while(sleep(sped)) {
 
     l += 1;
 
@@ -1217,45 +1224,6 @@ void prg_off() {
   for(CRGB& l : leds) l = CRGB(0, 0, 0);
   show();
   while(sleep(10));   
-}
-
-void prg_sound_single_color() {
-  while(sleep(sped)) {
-    int val = avrage_sound*5;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(val, 255, brightness);
-    } 
-    show();
-  }
-}
-
-void prg_sound_many_colors() {
-  while(sleep(sped)) {
-    float val = avrage_sound / 8.0f;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(color*val+(1.0-val)*i, 255, brightness);
-    } 
-    show();
-  }
-}
-
-void prg_sound_single_color_fade() {
-  while(sleep(sped)) {
-    int val = avrage_sound / 8.0f;
-    for(int i = 0; i < NUM_LIGHTS; i++) {
-      leds[i] = CHSV(color, val, brightness);
-    } 
-    show();
-  }
-}
-
-void prg_sound_rotating() {
-  while(sleep(sped)) {
-    int val = avrage_sound;
-    leds[0] = CHSV(COLOR_LVLS[val%NUM_COLOR_LVLS], 255, brightness); 
-    show();
-    rotate(1);
-  }
 }
 
 #endif

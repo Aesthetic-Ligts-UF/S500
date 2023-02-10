@@ -40,30 +40,55 @@ void reset() {
   sped = SPEED_LVLS[5];
   brightness = 128;
   color = COLOR_LVLS[5];
-  sound_index = 0;
-  avrage_sound = 0;
   paused = false;
   last_command = IRCode::Upp;
   clear();
 }
 
-void poll_sound() {
-  sound_lvls[sound_index++] = max(analogRead(A0) - STANDARD_SOUND_LVL, 0);
-
-  if(sound_index >= 8) {
-    sound_index = 0;
-  }
-
-  if(sound_index == 0) {
-    long int sum = 0;
-    for(int i = 0; i < 8; i++) {
-      sum += sound_lvls[i];
+void poll_pc() {
+  if (Serial.available() == 0) return;
+  String command = Serial.readStringUntil(' ');
+  if (command == "program") {
+    int prg = Serial.readString().toInt();
+    program = prg % NUM_PROGS;
+    Serial.println("program")
+    DEBUG_LOG("Set program to id: ");
+    DEBUG_LOGLN(program);
+  } else if (command == "brightness") {
+    int brg = Serial.readString().toInt();
+    brightness = min(max(brg, 0), 255);
+    Serial.println("brightness")
+    DEBUG_LOG("Set brightness to lvl: ");
+    DEBUG_LOGLN(brightness);
+  } else if (command == "speed") {
+    int spd = Serial.readString().toInt();
+    sped = min(max(spd, 1), 512);
+    Serial.println("speed")
+    DEBUG_LOG("Set speed to lvl: ");
+    DEBUG_LOGLN(sped);
+  } else if (command == "color") {
+    int col = Serial.readString().toInt();
+    color = min(max(col, 0), 255);
+    Serial.println("color")
+    DEBUG_LOG("Set color to lvl: ");
+    DEBUG_LOGLN(color);
+  } else if (command == "rust") {
+    int enable = Serial.readString().toInt();
+    Serial.println("rust");
+    if (enable) {
+      Serial.begin(RUST_PROGRAM_BAUD_RATE);
+      program = 45;
+    } else {
+      Serial.begin(ARDUINO_COMMUNICATION_BAUD_RATE);
+      program = 0;
     }
-    avrage_sound = sum / 8;
+  } else {
+    DEBUG_LOG("Unknown command entered!");
+    DEBUG_LOGLN(command);
   }
 }
 
-void poll_inputs() {
+void poll_ir() {
   static char num_str[4] = "0\0\0";
   static char num_index = 0;
   static int num = 0;
@@ -286,29 +311,12 @@ bool sleep(long int ms) {
 
   static unsigned long start_time = millis();
   static bool rotating = false;
-
   do {
-    if(program >= 45 && program <= 48) {
-      poll_sound();
-    }
-    poll_inputs();
+    //poll_ir();
+    poll_pc();
   } while(millis() < start_time + ms || !irrecv.isIdle() || paused);
 
   start_time = millis();
-
-  if(program != -1) {
-    if(current_program != program) {
-      rotating = false;
-    }
-
-    if(program == NUM_PROGS-1) {
-      rotating = true;
-    }
-
-    if(rotating) {
-      program = ((millis() / 1000) / 4) % (NUM_PROGS - 1);
-    }
-  }
 
   return current_program == program;
 }
@@ -320,10 +328,8 @@ void show() {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(ARDUINO_COMMUNICATION_BAUD_RATE);//500000/ 216000 / 115200 /9600
   irrecv.enableIRIn();
-
-  Serial.println("Start up!");
 
   sleep( 1500 ); // power-up safety sleep
 
@@ -381,10 +387,7 @@ void loop() {
     case 42: prg_christmas();                         break;
     case 43: prg_flare_ups_single_color();            break;
     case 44: prg_flare_ups_many_colors();             break;
-    case 45: prg_sound_single_color();                break;
-    case 46: prg_sound_many_colors();                 break;
-    case 47: prg_sound_single_color_fade();           break;
-    case 48: prg_sound_rotating();                    break;
+    case 45: prg_custom();                            break;
     default:
       Serial.print("PROGRAM ID ");
       Serial.print(program, DEC);

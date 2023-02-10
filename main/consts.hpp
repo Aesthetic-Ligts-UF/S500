@@ -24,10 +24,13 @@
 #ifndef CONSTS_H_INCLUDED
 #define CONSTS_H_INCLUDED
 
+constexpr unsigned long ARDUINO_COMMUNICATION_BAUD_RATE = 9600;
+constexpr unsigned long RUST_PROGRAM_BAUD_RATE = 500000;
+
 // Define sensor pin
 constexpr int RECV_PIN = 4;
 
-constexpr int NUM_PROGS = 50;
+constexpr int NUM_PROGS = 46;
 constexpr int NUM_LIGHTS = 150;
 
 #define LED_TYPE    WS2811
@@ -63,7 +66,5 @@ const int COLOR_LVLS[NUM_COLOR_LVLS] = {
     184,//PURPLE
     220,//PINK
 };
-
-constexpr int STANDARD_SOUND_LVL = 500;
 
 #endif

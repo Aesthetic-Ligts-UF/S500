@@ -24,7 +24,7 @@
 #ifndef HELPER_H_INCLUDED
 #define HELPER_H_INCLUDED
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define DEBUG_LOG(...) Serial.print(__VA_ARGS__); 
@@ -57,7 +57,7 @@ enum class IRCode : long long {
 };
 
 void reset();
-void poll_inputs();
+void poll_ir();
 bool sleep(long int ms);
 void show();
 void clear();
@@ -65,7 +65,6 @@ void rotate(char amount);
 void draw_tail_single_color(unsigned char pos, char length, char dir, int color);
 void draw_tail_many_colors(unsigned char pos, char length, char dir, int color);
 void draw_rocket(int pos, char length, char dir, bool blow);
-void poll_sound();
 void poll_input();
 
 #endif
