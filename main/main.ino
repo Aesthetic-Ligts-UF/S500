@@ -48,44 +48,72 @@ void reset() {
 void poll_pc() {
   if (Serial.available() == 0) return;
   String command = Serial.readStringUntil(' ');
-  if (command == "program") {
-    int prg = Serial.readString().toInt();
+  uint8_t args[1] = {Serial.read()};
+  Serial.readBytesUntil(0, args, 1);
+  Serial.println(command);
+  if (command == "Program") {
+    int prg = args[0];
     program = prg % NUM_PROGS;
-    Serial.println("program")
     DEBUG_LOG("Set program to id: ");
     DEBUG_LOGLN(program);
-  } else if (command == "brightness") {
-    int brg = Serial.readString().toInt();
-    brightness = min(max(brg, 0), 255);
-    Serial.println("brightness")
+  } else if (command == "Brightness") {
+    brightness = args[0];
     DEBUG_LOG("Set brightness to lvl: ");
     DEBUG_LOGLN(brightness);
-  } else if (command == "speed") {
-    int spd = Serial.readString().toInt();
-    sped = min(max(spd, 1), 512);
-    Serial.println("speed")
+  } else if (command == "Speed") {
+    sped = args[0];
     DEBUG_LOG("Set speed to lvl: ");
     DEBUG_LOGLN(sped);
-  } else if (command == "color") {
-    int col = Serial.readString().toInt();
-    color = min(max(col, 0), 255);
-    Serial.println("color")
+  } else if (command == "Color") {
+    color = args[0];
     DEBUG_LOG("Set color to lvl: ");
     DEBUG_LOGLN(color);
-  } else if (command == "rust") {
-    int enable = Serial.readString().toInt();
-    Serial.println("rust");
+  } else if (command == "RustProgram") {
+    int enable = args[0];
     if (enable) {
-      Serial.begin(RUST_PROGRAM_BAUD_RATE);
       program = 45;
     } else {
-      Serial.begin(ARDUINO_COMMUNICATION_BAUD_RATE);
       program = 0;
     }
   } else {
     DEBUG_LOG("Unknown command entered!");
     DEBUG_LOGLN(command);
   }
+  /*switch (command) {
+    case Program:
+      int prg = args[0];
+      program = prg % NUM_PROGS;
+      DEBUG_LOG("Set program to id: ");
+      DEBUG_LOGLN(program);
+      break;
+    case Brightness:
+      brightness = args[0];
+      DEBUG_LOG("Set brightness to lvl: ");
+      DEBUG_LOGLN(brightness);
+      break;
+    case Speed:
+      sped = args[0];
+      DEBUG_LOG("Set speed to lvl: ");
+      DEBUG_LOGLN(sped);
+      break;
+    case Color:
+      color = args[0];
+      DEBUG_LOG("Set color to lvl: ");
+      DEBUG_LOGLN(color);
+      break;
+    case RustProgram:
+      int enable = args[0];
+      if (enable) {
+        program = 45;
+      } else {
+        program = 0;
+      }
+      break;
+    default:
+      DEBUG_LOG("Unknown command entered!");
+      DEBUG_LOGLN(command);
+      break;
+  }*/
 }
 
 void poll_ir() {
@@ -328,7 +356,8 @@ void show() {
 }
 
 void setup() {
-  Serial.begin(ARDUINO_COMMUNICATION_BAUD_RATE);//500000/ 216000 / 115200 /9600
+  Serial.begin(RUST_PROGRAM_BAUD_RATE);//500000/ 216000 / 115200 /9600
+  Serial.setTimeout(10);
   irrecv.enableIRIn();
 
   sleep( 1500 ); // power-up safety sleep

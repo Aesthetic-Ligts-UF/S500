@@ -24,6 +24,10 @@
 #ifndef CONSTS_H_INCLUDED
 #define CONSTS_H_INCLUDED
 
+#define LED_TYPE    WS2811
+#define COLOR_ORDER GRB
+#define LED_PIN     5
+
 constexpr unsigned long ARDUINO_COMMUNICATION_BAUD_RATE = 9600;
 constexpr unsigned long RUST_PROGRAM_BAUD_RATE = 500000;
 
@@ -32,10 +36,6 @@ constexpr int RECV_PIN = 4;
 
 constexpr int NUM_PROGS = 46;
 constexpr int NUM_LIGHTS = 150;
-
-#define LED_TYPE    WS2811
-#define COLOR_ORDER GRB
-#define LED_PIN     5
 
 constexpr long din_mamma_1 = 0x7100AB;
 constexpr long din_mamma_2 = 0xFF35AB;

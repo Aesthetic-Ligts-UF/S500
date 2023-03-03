@@ -34,6 +34,15 @@
 #define DEBUG_LOGLN(...)
 #endif
 
+enum Message : uint8_t {
+  Ready = 0xA1,
+  Program = 0xA2,
+  Color = 0xA3,
+  Speed = 0xA4,
+  Brightness = 0xA5,
+  RustProgram = 0xA6
+};
+
 enum class IRCode : long long {
   None    = 0x000000,
   One     = 0xFFA25D,

@@ -33,7 +33,7 @@
 
 void prg_custom() {
   while(sleep(20)) {
-    Serial.readBytes((char*)(&leds[0]), NUM_LIGHTS * 3);
+    Serial.readBytes((char*)(&leds[0]), NUM_LIGHTS * 3);      
     Serial.println("ready");
     show();
   }
