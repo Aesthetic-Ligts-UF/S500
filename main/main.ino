@@ -39,7 +39,7 @@ void reset() {
   last_program = program;
   sped = SPEED_LVLS[5];
   brightness = 128;
-  color = COLOR_LVLS[5];
+  color = COLOR_LVLS[6];
   paused = false;
   last_command = IRCode::Upp;
   clear();
