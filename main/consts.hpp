@@ -28,8 +28,13 @@
 #define COLOR_ORDER GRB
 #define LED_PIN     5
 
-constexpr unsigned long ARDUINO_COMMUNICATION_BAUD_RATE = 9600;
-constexpr unsigned long RUST_PROGRAM_BAUD_RATE = 500000;
+#define WINDOWS
+
+#ifdef WINDOWS
+constexpr unsigned long BAUD_RATE = 115200;
+#elif defined LINUX
+constexpr unsigned long BAUD_RATE = 500000;
+#endif
 
 // Define sensor pin
 constexpr int RECV_PIN = 4;

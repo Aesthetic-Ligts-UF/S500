@@ -48,28 +48,30 @@ void reset() {
 void poll_pc() {
   if (Serial.available() == 0) return;
   String command = Serial.readStringUntil(' ');
-  uint8_t args[1] = {Serial.read()};
-  Serial.readBytesUntil(0, args, 1);
+  //uint8_t args[1] = {Serial.read()};
+  //uint8_t args[1];
+  //Serial.readBytesUntil(0, args, 1);
+  int arg = Serial.readString().toInt();
   Serial.println(command);
   if (command == "Program") {
-    int prg = args[0];
+    int prg = arg;
     program = prg % NUM_PROGS;
     DEBUG_LOG("Set program to id: ");
     DEBUG_LOGLN(program);
   } else if (command == "Brightness") {
-    brightness = args[0];
+    brightness = arg;
     DEBUG_LOG("Set brightness to lvl: ");
     DEBUG_LOGLN(brightness);
   } else if (command == "Speed") {
-    sped = args[0];
+    sped = arg;
     DEBUG_LOG("Set speed to lvl: ");
     DEBUG_LOGLN(sped);
   } else if (command == "Color") {
-    color = args[0];
+    color = arg;
     DEBUG_LOG("Set color to lvl: ");
     DEBUG_LOGLN(color);
   } else if (command == "RustProgram") {
-    int enable = args[0];
+    int enable = arg;
     if (enable) {
       program = 45;
     } else {
@@ -356,7 +358,7 @@ void show() {
 }
 
 void setup() {
-  Serial.begin(RUST_PROGRAM_BAUD_RATE);//500000/ 216000 / 115200 /9600
+  Serial.begin(BAUD_RATE);//500000/ 216000 / 115200 /9600
   Serial.setTimeout(10);
   irrecv.enableIRIn();
 
